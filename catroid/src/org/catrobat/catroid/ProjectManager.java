@@ -94,6 +94,7 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 		project = StorageHandler.getInstance().loadProject(projectName);
 
 		if (project == null) {
+			Log.d("ProjectManager", "project == null");
 			if (oldProject != null) {
 				project = oldProject;
 				MessageContainer.restoreBackup();

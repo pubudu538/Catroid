@@ -27,6 +27,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -96,6 +98,19 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		if (!BackPackListManager.isBackpackFlag()) {
 			BackPackListManager.getInstance().setSoundInfoArrayListEmpty();
 		}
+		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
+			return;
+		}
+		// modified
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		if (sharedPreferences.getBoolean("firsttime", true)) {
+			UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
+		}
+
+		Editor edit = sharedPreferences.edit();
+		edit.putBoolean("firsttime", false);
+		edit.commit();
 	}
 
 	@Override
@@ -105,14 +120,20 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
 		}
-
-		UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
+		// 		move to oncreate for test
+		//		UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
 		PreStageActivity.shutdownPersistentResources();
 		setMainMenuButtonContinueText();
-		findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		String projectName = getIntent().getStringExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 		if (projectName != null) {
 			loadProjectInBackground(projectName);
+		}
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			Log.d("MainMenuActivity", "projectname not null");
+			findViewById(R.id.main_menu_button_continue).setEnabled(true);
+		} else {
+			Log.d("MainMenuActivity", "projectname null");
+			findViewById(R.id.main_menu_button_continue).setEnabled(false);
 		}
 		getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 	}
@@ -125,6 +146,7 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		}
 
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			Log.d("MainMenuActivity", "current project != null");
 			ProjectManager.getInstance().saveProject();
 			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, ProjectManager.getInstance()
 					.getCurrentProject().getName());
@@ -305,5 +327,6 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 		mainMenuButtonContinue.setText(spannableStringBuilder);
+
 	}
 }

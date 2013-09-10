@@ -34,6 +34,7 @@ import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -412,6 +413,19 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			StorageHandler.getInstance().deleteProject(projectToEdit);
 		}
 		projectList.remove(projectToEdit);
+
+		try {
+			projectList.remove(projectToEdit);
+			if (projectList.size() == 0) {
+				projectManager.setProject(null);
+			} else {
+				projectManager.loadProject((projectList.get(0)).projectName, getActivity(), false);
+				projectManager.saveProject();
+			}
+		} catch (ClassCastException exception) {
+			Log.e("CATROID", getActivity().toString() + " does not implement ErrorListenerInterface", exception);
+		}
+		initAdapter();
 	}
 
 	private void deleteCheckedProjects() {
