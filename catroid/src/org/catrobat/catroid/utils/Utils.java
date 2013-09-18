@@ -302,7 +302,7 @@ public final class Utils {
 			} else if (ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name),
 					context, false)) {
 			} else {
-				//ProjectManager.getInstance().initializeDefaultProject(context);
+				ProjectManager.getInstance().initializeDefaultProject(context);
 			}
 		}
 	}
