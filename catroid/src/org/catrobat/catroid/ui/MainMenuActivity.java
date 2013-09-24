@@ -105,6 +105,7 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		if (sharedPreferences.getBoolean("firsttime", true)) {
+			Log.d("MainMenuActivity", "firsttime");
 			UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
 		}
 

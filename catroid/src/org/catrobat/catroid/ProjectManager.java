@@ -94,24 +94,11 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 		project = StorageHandler.getInstance().loadProject(projectName);
 
 		if (project == null) {
-			Log.d("ProjectManager", "project == null");
 			if (oldProject != null) {
 				project = oldProject;
 				MessageContainer.restoreBackup();
 			} else {
 				project = Utils.findValidProject();
-				if (project == null) {
-					try {
-						project = StandardProjectHandler.createAndSaveStandardProject(context);
-						MessageContainer.clearBackup();
-					} catch (IOException ioException) {
-						if (errorMessage) {
-							Utils.showErrorDialog(context, R.string.error_load_project);
-						}
-						Log.e(TAG, "Cannot load project.", ioException);
-						return false;
-					}
-				}
 			}
 			if (errorMessage) {
 				Utils.showErrorDialog(context, R.string.error_load_project);
