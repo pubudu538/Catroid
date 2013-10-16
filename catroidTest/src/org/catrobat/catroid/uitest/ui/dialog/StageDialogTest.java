@@ -63,6 +63,8 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	public void setUp() throws Exception {
 		super.setUp();
 		UiTestUtils.prepareStageForTest();
+		Project project = createAndSaveTestProject(testProject);
+		ProjectManager.getInstance().setProject(project);
 	}
 
 	@Override
@@ -74,8 +76,8 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testBackButtonPressedTwice() {
-		Project project = createAndSaveTestProject(testProject);
-		ProjectManager.getInstance().setProject(project);
+		//Project project = createAndSaveTestProject(testProject);
+		//ProjectManager.getInstance().setProject(project);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
@@ -279,7 +281,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testAxesOnOff() {
-		createAndSaveTestProject(testProject);
+		//createAndSaveTestProject(testProject);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
