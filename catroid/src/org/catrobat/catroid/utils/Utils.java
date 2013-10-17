@@ -299,10 +299,6 @@ public final class Utils {
 
 			if (projectName != null) {
 				ProjectManager.getInstance().loadProject(projectName, context, false);
-			} else if (ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name),
-					context, false)) {
-			} else {
-				ProjectManager.getInstance().initializeDefaultProject(context);
 			}
 		}
 	}
