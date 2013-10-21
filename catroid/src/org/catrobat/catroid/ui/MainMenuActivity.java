@@ -143,12 +143,14 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		//			Log.d("MainMenuActivity", "projectname null");
 		//			findViewById(R.id.main_menu_button_continue).setEnabled(false);
 		//		}
+
+		getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
+
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			setMainMenuButtonEnabled(true);
 		} else {
 			setMainMenuButtonEnabled(false);
 		}
-		getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 	}
 
 	@Override
@@ -159,7 +161,8 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		}
 
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
-			Log.d("MainMenuActivity", "current project != null");
+			Log.d("MainMenuActivity", "current project != null "
+					+ ProjectManager.getInstance().getCurrentProject().getName());
 			ProjectManager.getInstance().saveProject();
 			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, ProjectManager.getInstance()
 					.getCurrentProject().getName());
