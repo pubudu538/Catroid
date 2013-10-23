@@ -172,6 +172,7 @@ public final class UtilFile {
 	 */
 	public static List<String> getProjectNames(File directory) {
 		List<String> projectList = new ArrayList<String>();
+
 		File[] fileList = directory.listFiles();
 		if (fileList != null) {
 			FilenameFilter filenameFilter = new FilenameFilter() {
