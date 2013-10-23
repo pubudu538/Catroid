@@ -146,11 +146,7 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 
 		getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 
-		if (ProjectManager.getInstance().getCurrentProject() != null) {
-			setMainMenuButtonEnabled(true);
-		} else {
-			setMainMenuButtonEnabled(false);
-		}
+		updateContinueButton();
 	}
 
 	@Override
@@ -345,14 +341,14 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 	//		mainMenuButtonContinue.setText(spannableStringBuilder);
 	//	}
 
-	private void setMainMenuButtonEnabled(boolean enabled) {
+	private void updateContinueButton() {
 		Button mainMenuButtonContinue = (Button) this.findViewById(R.id.main_menu_button_continue);
 		SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
 		String mainMenuContinue = this.getString(R.string.main_menu_continue);
 		spannableStringBuilder.append(mainMenuContinue);
 		spannableStringBuilder.append("\n");
 
-		if (enabled) {
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			spannableStringBuilder.append(Utils.getCurrentProjectName(this));
 			TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(this, R.style.MainMenuButtonTextSecondLine);
 			spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
@@ -362,6 +358,7 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 			mainMenuButtonContinue.setText(spannableStringBuilder);
 			mainMenuButtonContinue.getCompoundDrawables()[0].setAlpha(255);
 			mainMenuButtonContinue.getBackground().setAlpha(255);
+			findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		} else {
 			spannableStringBuilder.append("---");
 			TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(this,
@@ -373,7 +370,8 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 			mainMenuButtonContinue.setText(spannableStringBuilder);
 			mainMenuButtonContinue.getCompoundDrawables()[0].setAlpha(127);
 			mainMenuButtonContinue.getBackground().setAlpha(178);
+			findViewById(R.id.main_menu_button_continue).setEnabled(false);
 		}
-		findViewById(R.id.main_menu_button_continue).setEnabled(enabled);
+
 	}
 }
