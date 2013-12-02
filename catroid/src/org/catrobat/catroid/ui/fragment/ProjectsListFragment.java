@@ -29,13 +29,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -414,23 +412,6 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			StorageHandler.getInstance().deleteProject(projectToEdit);
 		}
 		projectList.remove(projectToEdit);
-
-		try {
-			projectList.remove(projectToEdit);
-			if (projectList.size() == 0) {
-				projectManager.setProject(null);
-				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-				Editor edit = sharedPreferences.edit();
-				edit.remove(Constants.PREF_PROJECTNAME_KEY);
-				edit.commit();
-			} else {
-				projectManager.loadProject((projectList.get(0)).projectName, getActivity(), false);
-				projectManager.saveProject();
-			}
-		} catch (ClassCastException exception) {
-			Log.e("CATROID", getActivity().toString() + " does not implement ErrorListenerInterface", exception);
-		}
-		initAdapter();
 	}
 
 	private void deleteCheckedProjects() {
@@ -440,11 +421,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			deleteProject();
 			numDeleted++;
 		}
-
-		if (projectList.isEmpty()) {
-			//ProjectManager projectManager = ProjectManager.getInstance();
-			//projectManager.initializeDefaultProject(getActivity());
-		} else if (ProjectManager.getInstance().getCurrentProject() == null) {
+		if (ProjectManager.getInstance().getCurrentProject() == null) {
 			Utils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_PROJECTNAME_KEY,
 					projectList.get(0).projectName);
 		}
