@@ -36,7 +36,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.SayForBrick;
+import org.catrobat.catroid.content.bricks.BubbleBrickBaseType;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 
 import java.util.ArrayList;
@@ -95,8 +95,8 @@ public class BaseActivity extends SherlockFragmentActivity {
 				for (int index = 0; index < sprite.getNumberOfScripts(); index++) {
 					Script script = sprite.getScript(index);
 					for (Brick brick : script.getBrickList()) {
-						if (brick instanceof SayForBrick) {
-							((SayForBrick) brick).setContext(getApplicationContext());
+						if (brick instanceof BubbleBrickBaseType) {
+							((BubbleBrickBaseType) brick).setContext(getApplicationContext());
 						}
 					}
 				}
