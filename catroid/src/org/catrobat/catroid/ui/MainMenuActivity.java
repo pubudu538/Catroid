@@ -235,7 +235,7 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 			}
 		} else {
 			Intent intent = new Intent(MainMenuActivity.this, WebViewActivity.class);
-			intent.putExtra("url", url);
+			intent.putExtra(WebViewActivity.INTENT_PARAMETER_URL, url);
 			startActivity(intent);
 		}
 
