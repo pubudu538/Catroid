@@ -64,12 +64,13 @@ public class WebViewActivityTest extends BaseActivityInstrumentationTestCase<Mai
 		super.tearDown();
 	}
 
-	public void testWebView() {
+	public void testWebViewWeb() {
+		//explore button
 		String webButtonText = solo.getString(R.string.main_menu_web);
-
 		solo.clickOnButton(webButtonText);
 
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+
 			solo.waitForView(solo.getView(R.id.webView));
 			solo.sleep(2000);
 
@@ -80,13 +81,38 @@ public class WebViewActivityTest extends BaseActivityInstrumentationTestCase<Mai
 			assertEquals("URL is not correct", Constants.BASE_URL_HTTPS, webView.getUrl());
 
 			assertTrue("website hasn't been loaded properly", solo.searchText(COPYRIGHT_CHARACTER + " Catrobat"));
+
 		} else {
-			fail("This test is made for API 11 or above");
+			testWebViewOnOldDevices();
+		}
+	}
+
+	public void testWebViewHelp() {
+		//help button
+		String helpButtonText = solo.getString(R.string.main_menu_help);
+
+		solo.clickOnButton(helpButtonText);
+
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+			solo.waitForView(solo.getView(R.id.webView));
+			solo.sleep(2000);
+
+			assertEquals("Current Activity is not WebViewActivity", WebViewActivity.class, solo.getCurrentActivity()
+					.getClass());
+
+			WebView webView = (WebView) solo.getCurrentActivity().findViewById(R.id.webView);
+			assertEquals("URL is not correct", Constants.CATROBAT_HELP_URL, webView.getUrl());
+			assertTrue("website hasn't been loaded properly", solo.searchText(COPYRIGHT_CHARACTER + " Catrobat"));
+
+		} else {
+			testWebViewOnOldDevices();
+
 		}
 	}
 
 	@Device
-	public void testWebOnOldDevices() {
+	public void testWebViewOnOldDevices() {
+		//dialog should appear
 		String webButtonText = solo.getString(R.string.main_menu_web);
 		String cancelButtonText = solo.getString(R.string.cancel_button);
 		String dialogTitleText = solo.getString(R.string.main_menu_web_dialog_title);
@@ -108,9 +134,8 @@ public class WebViewActivityTest extends BaseActivityInstrumentationTestCase<Mai
 			solo.sleep(300);
 			solo.goBack();
 			assertFalse("Dialog was not closed when clicked back button", solo.searchText(dialogTitleText));
-		} else {
-			fail("This test is made for API 10 or lower");
 		}
 
 	}
+
 }

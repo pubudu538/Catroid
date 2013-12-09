@@ -63,7 +63,7 @@ public final class Constants {
 	public static final String CATROBAT_ABOUT_URL = "http://developer.catrobat.org/";
 	public static final String ABOUT_POCKETCODE_LICENSE_URL = CATROBAT_ABOUT_URL + "licenses";
 
-	public static final String CATROBAT_HELP_URL = "http://www.pocketcode.org/tutorial";
+	public static final String CATROBAT_HELP_URL = "https://www.pocketcode.org/tutorial";
 
 	public static final String TOKEN = "token";
 	public static final String NO_TOKEN = "no_token";
