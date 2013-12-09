@@ -209,8 +209,8 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.CATROBAT_HELP_URL));
-		startActivity(browserIntent);
+
+		startWebViewActivity(Constants.CATROBAT_HELP_URL);
 	}
 
 	public void handleWebButton(View view) {
@@ -218,6 +218,11 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 			return;
 		}
 
+		startWebViewActivity(Constants.BASE_URL_HTTPS);
+
+	}
+
+	private void startWebViewActivity(String url) {
 		// TODO just a quick fix for not properly working webview on old devices
 		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
 			final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -230,8 +235,10 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 			}
 		} else {
 			Intent intent = new Intent(MainMenuActivity.this, WebViewActivity.class);
+			intent.putExtra("url", url);
 			startActivity(intent);
 		}
+
 	}
 
 	private void showWebWarningDialog() {

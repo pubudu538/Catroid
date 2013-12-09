@@ -36,7 +36,6 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.DownloadUtil;
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -44,6 +43,8 @@ public class WebViewActivity extends BaseActivity {
 
 	private WebView webView;
 	private boolean callMainMenu = false;
+
+	private String url;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +54,15 @@ public class WebViewActivity extends BaseActivity {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.hide();
 
+		Intent intent = getIntent();
+		url = intent.getStringExtra("url");
+
 		webView = (WebView) findViewById(R.id.webView);
 		webView.setWebChromeClient(new WebChromeClient());
 		webView.setWebViewClient(new MyWebViewClient());
 		webView.getSettings().setJavaScriptEnabled(true);
 
-		webView.loadUrl(Constants.BASE_URL_HTTPS);
+		webView.loadUrl(url);
 
 		webView.setDownloadListener(new DownloadListener() {
 			@Override
@@ -83,9 +87,9 @@ public class WebViewActivity extends BaseActivity {
 
 	private class MyWebViewClient extends WebViewClient {
 		@Override
-		public void onPageStarted(WebView view, String url, Bitmap favicon) {
+		public void onPageStarted(WebView view, String urlClient, Bitmap favicon) {
 			if (callMainMenu) {
-				if (url.equals(Constants.BASE_URL_HTTPS)) {
+				if (urlClient.equals(url)) {
 					Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
 					startActivity(intent);
 				}
