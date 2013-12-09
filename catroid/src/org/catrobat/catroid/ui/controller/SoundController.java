@@ -155,7 +155,12 @@ public final class SoundController {
 
 			long milliseconds = tempPlayer.getDuration();
 			long seconds = milliseconds / 1000;
-			holder.timePlayedChronometer.setText(DateUtils.formatElapsedTime(seconds));
+			if (seconds == 0) { //otherwise a sound could have a length of 00:00
+				seconds = 1;
+			}
+			String timeDisplayed = DateUtils.formatElapsedTime(seconds);
+
+			holder.timePlayedChronometer.setText(timeDisplayed);
 			holder.timePlayedChronometer.setVisibility(Chronometer.VISIBLE);
 
 			if (soundAdapter.getCurrentPlayingPosition() == Constants.NO_POSITION) {
