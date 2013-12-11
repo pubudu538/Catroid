@@ -31,6 +31,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -215,8 +216,7 @@ public final class LookController {
 			return;
 		}
 		// hack for android 4.4
-		if (originalImagePath == null) {
-
+		if (originalImagePath == null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
 			String id = originalUri.getLastPathSegment().split(":")[1];
 			final String[] imageColumns = { MediaStore.Images.Media.DATA };
 			final String imageOrderBy = null;
