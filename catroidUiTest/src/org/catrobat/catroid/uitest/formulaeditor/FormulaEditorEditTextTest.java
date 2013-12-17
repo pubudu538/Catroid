@@ -706,8 +706,7 @@ public class FormulaEditorEditTextTest extends BaseActivityInstrumentationTestCa
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_compute));
 		solo.waitForView(solo.getView(R.id.formula_editor_compute_dialog_textview));
 		computeTextView = (TextView) solo.getView(R.id.formula_editor_compute_dialog_textview);
-		assertEquals("computeTextView did not contain the correct value", "-8.111", computeTextView.getText()
-				.toString());
+		assertEquals("computeTextView did not contain the correct value", "-8.11", computeTextView.getText().toString());
 
 		solo.goBack();
 
@@ -762,7 +761,7 @@ public class FormulaEditorEditTextTest extends BaseActivityInstrumentationTestCa
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_edit_field_clear));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
-		final int zeroCount = 17;
+		final int zeroCount = 7;
 		for (int i = 0; i < zeroCount; i++) {
 			solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_0));
 		}

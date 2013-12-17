@@ -207,7 +207,7 @@ public class Formula implements Serializable {
 		} else if (formulaTree.hasFunctionStringReturnType() || formulaTree.getElementType() == ElementType.STRING) {
 			return interpretString(sprite);
 		} else {
-			float interpretationResult = 0;
+			float interpretationResult;
 			try {
 				interpretationResult = (float) this.interpretDouble(sprite);
 			} catch (NumberFormatException numberFormatException) {
