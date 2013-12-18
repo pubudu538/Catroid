@@ -37,7 +37,7 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public abstract class BubbleBrickBaseType extends BrickBaseType implements OnClickListener, FormulaBrick {
+public abstract class BubbleBrickBaseType extends BrickBaseType implements OnClickListener, FormulaBrick, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 	protected static final int STRING_OFFSET = 20;
@@ -105,16 +105,16 @@ public abstract class BubbleBrickBaseType extends BrickBaseType implements OnCli
 			text = String.valueOf(this.text.interpretDouble(sprite));
 		}
 
-		String normalizedText = new String();
+		StringBuffer stringBuffer = new StringBuffer();
 
 		for (int index = 0; index < text.length(); index++) {
 			if (index % STRING_OFFSET == 0) {
-				normalizedText += "\n";
+				stringBuffer.append("\n");
 			}
 			//TODO: max size of text.
-			normalizedText += text.charAt(index);
+			stringBuffer.append(text.charAt(index));
 		}
-		return normalizedText;
+		return stringBuffer.toString();
 	}
 
 	protected void updateBubbleByteArrayFromDrawingCache() {

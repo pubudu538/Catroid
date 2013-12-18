@@ -55,6 +55,7 @@ public class SayForBrickAction extends TemporalAction {
 	}
 
 	public void setText(byte[] speechBubble) {
-		this.speechBubble = speechBubble;
+		this.speechBubble = new byte[speechBubble.length];
+		System.arraycopy(speechBubble, 0, this.speechBubble, 0, speechBubble.length);
 	}
 }

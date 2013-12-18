@@ -443,6 +443,7 @@ public class Look extends Image {
 
 	public void showSpeechBubble(byte[] speechBubble) {
 		StageListener.bubble.put(this, new Pixmap(speechBubble, 0, speechBubble.length));
+
 	}
 
 	public void hideSpeechBubble() {

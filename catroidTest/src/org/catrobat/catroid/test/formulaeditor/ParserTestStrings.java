@@ -37,7 +37,6 @@ import java.util.List;
 
 public class ParserTestStrings extends AndroidTestCase {
 
-	private static final double DELTA = 0.01;
 	private Sprite testSprite;
 	public static final String STRING_BEGIN_END = "\'";
 	public static final String USERVARIABLE_BEGIN_END = "\"";
