@@ -63,6 +63,7 @@ import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.SpriteAdapter;
 import org.catrobat.catroid.ui.adapter.SpriteAdapter.OnSpriteEditListener;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.RenameSpriteDialog;
 import org.catrobat.catroid.utils.Utils;
 
@@ -88,6 +89,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	private SpritesListInitReceiver spritesListInitReceiver;
 
 	private ActionMode actionMode;
+	private View selectAllActionModeButton;
 
 	private boolean actionModeActive = false;
 	private boolean isRenameActionMode;
@@ -254,6 +256,12 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			return;
 		}
 
+		updateActionModeTitle();
+		Utils.setSelectAllActionModeButtonVisibility(selectAllActionModeButton, spriteAdapter.getCount() > 1
+				&& spriteAdapter.getAmountOfCheckedSprites() != spriteAdapter.getCount() - 1);
+	}
+
+	private void updateActionModeTitle() {
 		int numberOfSelectedItems = spriteAdapter.getAmountOfCheckedSprites();
 
 		if (numberOfSelectedItems == 0) {
@@ -367,7 +375,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			titleId = R.string.dialog_confirm_delete_multiple_objects_title;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
 		builder.setTitle(titleId);
 		builder.setMessage(R.string.dialog_confirm_delete_object_message);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -444,20 +452,19 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	}
 
 	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
-		Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu).setOnClickListener(
-				new OnClickListener() {
+		selectAllActionModeButton = Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu);
+		selectAllActionModeButton.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View view) {
-						for (int position = 1; position < spriteList.size(); position++) {
-							spriteAdapter.addCheckedSprite(position);
-						}
-						spriteAdapter.notifyDataSetChanged();
-						view.setVisibility(View.GONE);
-						onSpriteChecked();
-					}
+			@Override
+			public void onClick(View view) {
+				for (int position = 1; position < spriteList.size(); position++) {
+					spriteAdapter.addCheckedSprite(position);
+				}
+				spriteAdapter.notifyDataSetChanged();
+				onSpriteChecked();
+			}
 
-				});
+		});
 	}
 
 	private class SpriteRenamedReceiver extends BroadcastReceiver {

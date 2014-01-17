@@ -54,7 +54,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -79,6 +78,7 @@ import org.catrobat.catroid.ui.adapter.SoundAdapter;
 import org.catrobat.catroid.ui.adapter.SoundBaseAdapter;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 import org.catrobat.catroid.ui.controller.SoundController;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.DeleteSoundDialog;
 import org.catrobat.catroid.ui.dialogs.RenameSoundDialog;
 import org.catrobat.catroid.utils.Utils;
@@ -113,6 +113,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 	private SoundsListInitReceiver soundsListInitReceiver;
 
 	private ActionMode actionMode;
+	private View selectAllActionModeButton;
 
 	private boolean isRenameActionMode;
 	private boolean isResultHandled = false;
@@ -141,11 +142,11 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 		View rootView = inflater.inflate(R.layout.fragment_sounds, null);
 		return rootView;
 	}
@@ -173,6 +174,10 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		Utils.loadProjectIfNeeded(getActivity());
 		setHandleAddbutton();
 
+		// set adapter and soundInfoList for ev. unpacking
+		BackPackListManager.getInstance().setCurrentSoundInfoList(soundInfoList);
+		BackPackListManager.getInstance().setCurrentSoundAdapter(adapter);
+
 	}
 
 	@Override
@@ -185,6 +190,15 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		}
 		menu.findItem(R.id.backpack).setVisible(visibility);
 		menu.findItem(R.id.cut).setVisible(false);
+
+		if (BackPackListManager.getInstance().getSoundInfoArrayList().size() > 0) {
+			menu.findItem(R.id.unpacking).setVisible(true);
+		} else {
+			menu.findItem(R.id.unpacking).setVisible(false);
+
+			StorageHandler.getInstance().clearBackPackSoundDirectory();
+		}
+
 		super.onPrepareOptionsMenu(menu);
 	}
 
@@ -313,7 +327,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 
 	@Override
 	public void startBackPackActionMode() {
-
+		Log.d("TAG", "startBackPackActionMode");
 		if (actionMode == null) {
 			SoundController.getInstance().stopSoundAndUpdateList(mediaPlayer, soundInfoList, adapter);
 			actionMode = getSherlockActivity().startActionMode(backPackModeCallBack);
@@ -381,11 +395,16 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 
 	@Override
 	public void onSoundChecked() {
-
 		if (isRenameActionMode || actionMode == null) {
 			return;
 		}
 
+		updateActionModeTitle();
+		Utils.setSelectAllActionModeButtonVisibility(selectAllActionModeButton,
+				adapter.getCount() > 0 && adapter.getAmountOfCheckedItems() != adapter.getCount());
+	}
+
+	private void updateActionModeTitle() {
 		int numberOfSelectedItems = adapter.getAmountOfCheckedItems();
 
 		if (numberOfSelectedItems == 0) {
@@ -458,6 +477,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 
 		getSherlockActivity().getMenuInflater().inflate(R.menu.context_menu_default, menu);
 		menu.findItem(R.id.context_menu_copy).setVisible(true);
+		menu.findItem(R.id.context_menu_unpacking).setVisible(false);
 		//TODO: remove this when inserting of sound items from backpack is possible
 		if (!BuildConfig.DEBUG) {
 			menu.findItem(R.id.context_menu_backpack).setVisible(false);
@@ -509,16 +529,15 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		if (soundInfoListChangedAfterNewListener != null) {
 			soundInfoListChangedAfterNewListener.onSoundInfoListChangedAfterNew(newSoundInfo);
 		}
+
 		//scroll down the list to the new item:
-		{
-			final ListView listView = getListView();
-			listView.post(new Runnable() {
-				@Override
-				public void run() {
-					listView.setSelection(listView.getCount() - 1);
-				}
-			});
-		}
+		final ListView listView = getListView();
+		listView.post(new Runnable() {
+			@Override
+			public void run() {
+				listView.setSelection(listView.getCount() - 1);
+			}
+		});
 
 		if (isResultHandled) {
 			isResultHandled = false;
@@ -618,20 +637,19 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 	}
 
 	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
-		Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu).setOnClickListener(
-				new OnClickListener() {
+		selectAllActionModeButton = Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu);
+		selectAllActionModeButton.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View view) {
-						for (int position = 0; position < soundInfoList.size(); position++) {
-							adapter.addCheckedItem(position);
-						}
-						adapter.notifyDataSetChanged();
-						view.setVisibility(View.GONE);
-						onSoundChecked();
-					}
+			@Override
+			public void onClick(View view) {
+				for (int position = 0; position < soundInfoList.size(); position++) {
+					adapter.addCheckedItem(position);
+				}
+				adapter.notifyDataSetChanged();
+				onSoundChecked();
+			}
 
-				});
+		});
 	}
 
 	private ActionMode.Callback renameModeCallBack = new ActionMode.Callback() {
@@ -717,6 +735,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			multipleItemAppendixDeleteActionMode = getString(R.string.sounds);
 
 			mode.setTitle(actionModeTitle);
+			addSelectAllActionModeButton(mode, menu);
 
 			return true;
 		}
@@ -747,12 +766,11 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
 			setActionModeActive(true);
 
-			mode.setTitle(R.string.delete);
-
 			actionModeTitle = getString(R.string.delete);
 			singleItemAppendixDeleteActionMode = getString(R.string.category_sound);
 			multipleItemAppendixDeleteActionMode = getString(R.string.sounds);
 
+			mode.setTitle(R.string.delete);
 			addSelectAllActionModeButton(mode, menu);
 
 			return true;
@@ -791,7 +809,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			titleId = R.string.dialog_confirm_delete_multiple_sounds_title;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
 		builder.setTitle(titleId);
 		builder.setMessage(R.string.dialog_confirm_delete_sound_message);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -847,20 +865,16 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			convertView = View.inflate(getActivity(), R.layout.fragment_sound_soundlist_item, null);
 
 			holder = new SoundViewHolder();
-			holder.playButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_play_image_button);
-			holder.pauseButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_pause_image_button);
-
-			holder.playButton.setVisibility(Button.VISIBLE);
-			holder.pauseButton.setVisibility(Button.GONE);
+			holder.playAndStopButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_image_button);
+			holder.playAndStopButton.setImageResource(R.drawable.ic_media_play);
+			holder.playAndStopButton.setContentDescription(getString(R.string.sound_play));
 
 			holder.soundFragmentButtonLayout = (LinearLayout) convertView
 					.findViewById(R.id.fragment_sound_item_main_linear_layout);
 			holder.checkbox = (CheckBox) convertView.findViewById(R.id.fragment_sound_item_checkbox);
 			holder.titleTextView = (TextView) convertView.findViewById(R.id.fragment_sound_item_title_text_view);
-			holder.timeSeperatorTextView = (TextView) convertView
+			holder.timeSeparatorTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_time_seperator_text_view);
-			holder.timeDurationTextView = (TextView) convertView
-					.findViewById(R.id.fragment_sound_item_duration_text_view);
 			holder.soundFileSizePrefixTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_size_prefix_text_view);
 			holder.soundFileSizeTextView = (TextView) convertView.findViewById(R.id.fragment_sound_item_size_text_view);
@@ -873,14 +887,14 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			holder = (SoundViewHolder) convertView.getTag();
 		}
 		SoundController controller = SoundController.getInstance();
-		controller.updateSoundLogic(position, holder, adapter);
+		controller.updateSoundLogic(getActivity(), position, holder, adapter);
 
 		return convertView;
 	}
 
 	public interface OnSoundInfoListChangedAfterNewListener {
 
-		public void onSoundInfoListChangedAfterNew(SoundInfo soundInfo);
+		void onSoundInfoListChangedAfterNew(SoundInfo soundInfo);
 
 	}
 
@@ -942,16 +956,15 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 				if (soundInfoListChangedAfterNewListener != null) {
 					soundInfoListChangedAfterNewListener.onSoundInfoListChangedAfterNew(newSoundInfo);
 				}
+
 				//scroll down the list to the new item:
-				{
-					final ListView listView = getListView();
-					listView.post(new Runnable() {
-						@Override
-						public void run() {
-							listView.setSelection(listView.getCount() - 1);
-						}
-					});
-				}
+				final ListView listView = getListView();
+				listView.post(new Runnable() {
+					@Override
+					public void run() {
+						listView.setSelection(listView.getCount() - 1);
+					}
+				});
 
 				if (isResultHandled) {
 					isResultHandled = false;
@@ -985,5 +998,4 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			}
 		}
 	}
-
 }

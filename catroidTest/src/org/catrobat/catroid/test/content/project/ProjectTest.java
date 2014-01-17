@@ -41,7 +41,7 @@ public class ProjectTest extends AndroidTestCase {
 
 	public void testVersionName() throws NameNotFoundException {
 		Project project = new Project(getContext(), "testProject");
-		PackageInfo packageInfo = getContext().getPackageManager().getPackageInfo("org.catrobat.catroid", 0);
+		PackageInfo packageInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
 		XmlHeader projectXmlHeader = project.getXmlHeader();
 		assertEquals("Incorrect version name", packageInfo.versionName,
 				(String) Reflection.getPrivateField(projectXmlHeader, "applicationVersion"));
@@ -86,8 +86,7 @@ public class ProjectTest extends AndroidTestCase {
 		project.setDeviceData(getContext());
 
 		languageVersion = (Float) Reflection.getPrivateField(header, "catrobatLanguageVersion");
-		assertEquals("Version should be the current one", Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION,
-				languageVersion);
+		assertEquals("Version should be the current one", Constants.CURRENT_CATROBAT_LANGUAGE_VERSION, languageVersion);
 
 		applicationName = (String) Reflection.getPrivateField(header, "applicationName");
 		assertEquals("Application name should be the current one", getContext().getString(R.string.app_name),

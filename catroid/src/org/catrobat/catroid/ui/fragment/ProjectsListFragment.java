@@ -63,6 +63,7 @@ import org.catrobat.catroid.ui.adapter.ProjectAdapter;
 import org.catrobat.catroid.ui.adapter.ProjectAdapter.OnProjectEditListener;
 import org.catrobat.catroid.ui.dialogs.CopyProjectDialog;
 import org.catrobat.catroid.ui.dialogs.CopyProjectDialog.OnCopyProjectListener;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.RenameProjectDialog;
 import org.catrobat.catroid.ui.dialogs.RenameProjectDialog.OnProjectRenameListener;
 import org.catrobat.catroid.ui.dialogs.SetDescriptionDialog;
@@ -96,6 +97,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 	private ProjectsListFragment parentFragment = this;
 
 	private ActionMode actionMode;
+	private View selectAllActionModeButton;
 
 	private boolean actionModeActive = false;
 
@@ -278,18 +280,26 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 				showSetDescriptionDialog();
 				break;
 
+			case R.id.context_menu_upload:
+				ProjectManager.getInstance().uploadProject(projectToEdit.projectName, this.getActivity());
+				break;
+
 		}
 		return super.onContextItemSelected(item);
 	}
 
 	@Override
 	public void onProjectChecked() {
-		boolean isSingleSelectMode = adapter.getSelectMode() == ListView.CHOICE_MODE_SINGLE ? true : false;
-
-		if (isSingleSelectMode || actionMode == null) {
+		if (adapter.getSelectMode() == ListView.CHOICE_MODE_SINGLE || actionMode == null) {
 			return;
 		}
 
+		updateActionModeTitle();
+		Utils.setSelectAllActionModeButtonVisibility(selectAllActionModeButton,
+				adapter.getCount() > 0 && adapter.getAmountOfCheckedProjects() != adapter.getCount());
+	}
+
+	private void updateActionModeTitle() {
 		int numberOfSelectedItems = adapter.getAmountOfCheckedProjects();
 
 		if (numberOfSelectedItems == 0) {
@@ -370,7 +380,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			titleId = R.string.dialog_confirm_delete_multiple_programs_title;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
 		builder.setTitle(titleId);
 		builder.setMessage(R.string.dialog_confirm_delete_program_message);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -434,20 +444,19 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 	}
 
 	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
-		Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu).setOnClickListener(
-				new OnClickListener() {
+		selectAllActionModeButton = Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu);
+		selectAllActionModeButton.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View view) {
-						for (int position = 0; position < projectList.size(); position++) {
-							adapter.addCheckedProject(position);
-						}
-						adapter.notifyDataSetChanged();
-						view.setVisibility(View.GONE);
-						onProjectChecked();
-					}
+			@Override
+			public void onClick(View view) {
+				for (int position = 0; position < projectList.size(); position++) {
+					adapter.addCheckedProject(position);
+				}
+				adapter.notifyDataSetChanged();
+				onProjectChecked();
+			}
 
-				});
+		});
 	}
 
 	private ActionMode.Callback deleteModeCallBack = new ActionMode.Callback() {
