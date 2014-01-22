@@ -1,24 +1,24 @@
 /**
- *  Catroid: An on-device visual programming system for Android devices
- *  Copyright (C) 2010-2013 The Catrobat Team
- *  (<http://developer.catrobat.org/credits>)
- *  
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU Affero General Public License as
- *  published by the Free Software Foundation, either version 3 of the
- *  License, or (at your option) any later version.
- *  
- *  An additional term exception under section 7 of the GNU Affero
- *  General Public License, version 3, is available at
- *  http://developer.catrobat.org/license_additional_term
- *  
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU Affero General Public License for more details.
- *  
- *  You should have received a copy of the GNU Affero General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Catroid: An on-device visual programming system for Android devices
+ * Copyright (C) 2010-2013 The Catrobat Team
+ * (<http://developer.catrobat.org/credits>)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * An additional term exception under section 7 of the GNU Affero
+ * General Public License, version 3, is available at
+ * http://developer.catrobat.org/license_additional_term
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.catrobat.catroid.test.content.actions;
 
@@ -29,25 +29,19 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
-import org.catrobat.catroid.content.bricks.IfLogicBeginBrick;
-import org.catrobat.catroid.content.bricks.IfLogicElseBrick;
-import org.catrobat.catroid.content.bricks.IfLogicEndBrick;
 import org.catrobat.catroid.content.bricks.SetVariableBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
-import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
 public class SetVariableActionTest extends AndroidTestCase {
 
 	private static final String TEST_USERVARIABLE = "testUservariable";
-	private static final int CHANGE_VARIABLE_VALUE = 10;
+	private static final double SET_VARIABLE_VALUE = 17;
+	private static final double INITIALIZED_VALUE = 0.0;
 	private Sprite testSprite;
 	private StartScript testScript;
-	private IfLogicBeginBrick ifLogicBeginBrick;
-	private IfLogicElseBrick ifLogicElseBrick;
-	private IfLogicEndBrick ifLogicEndBrick;
 	private Project project;
 
 	@Override
@@ -55,92 +49,83 @@ public class SetVariableActionTest extends AndroidTestCase {
 		super.setUp();
 		testSprite = new Sprite("testSprite");
 		project = new Project(null, "testProject");
-	}
-
-	public void testChangeVariable() throws InterruptedException {
-		testSprite.removeAllScripts();
-
+		testScript = new StartScript(testSprite);
 		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(new Sprite("testSprite1"));
-
+		ProjectManager.getInstance().setCurrentSprite(testSprite);
+		ProjectManager.getInstance().setCurrentScript(testScript);
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
+	}
+
+	public void testSetVariableWithNumericalFormula() {
 
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
-		SetVariableBrick setBrick = new SetVariableBrick(testSprite, new Formula(CHANGE_VARIABLE_VALUE), userVariable);
-
-		Formula validFormula = new Formula(0);
-		validFormula.setRoot(new FormulaElement(ElementType.OPERATOR, Operators.SMALLER_THAN.name(), null,
-				new FormulaElement(ElementType.NUMBER, "1", null), new FormulaElement(ElementType.NUMBER, "2", null)));
-
-		testScript = new StartScript(testSprite);
-
-		ifLogicBeginBrick = new IfLogicBeginBrick(testSprite, validFormula);
-		ifLogicElseBrick = new IfLogicElseBrick(testSprite, ifLogicBeginBrick);
-		ifLogicEndBrick = new IfLogicEndBrick(testSprite, ifLogicElseBrick, ifLogicBeginBrick);
-
-		testScript.addBrick(ifLogicBeginBrick);
+		SetVariableBrick setBrick = new SetVariableBrick(testSprite, new Formula(SET_VARIABLE_VALUE), userVariable);
 		testScript.addBrick(setBrick);
-		testScript.addBrick(ifLogicElseBrick);
-		testScript.addBrick(ifLogicEndBrick);
-
 		testSprite.addScript(testScript);
 		project.addSprite(testSprite);
-
-		ProjectManager.getInstance().setCurrentSprite(testSprite);
-		ProjectManager.getInstance().setCurrentScript(testScript);
-
 		testSprite.createStartScriptActionSequence();
-
-		testSprite.look.act(100f);
+		testSprite.look.act(1f);
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-
-		assertEquals("Variable not changed", CHANGE_VARIABLE_VALUE, ((Double) userVariable.getValue()).intValue());
-		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
-
+		assertEquals("Variable not changed", SET_VARIABLE_VALUE, userVariable.getValue());
 	}
 
-	public void testInvalidUserVariable() throws InterruptedException {
-		testSprite.removeAllScripts();
+	public void testSetVariableWithInvalidUserVariable() {
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(new Sprite("testSprite1"));
+		ChangeVariableBrick changeBrick = new ChangeVariableBrick(testSprite, SET_VARIABLE_VALUE);
+		testScript.addBrick(changeBrick);
+		testSprite.addScript(testScript);
+		project.addSprite(testSprite);
+		ProjectManager.getInstance().setCurrentSprite(testSprite);
+		testSprite.createStartScriptActionSequence();
+		testSprite.look.act(1f);
 
-		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
-		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
+		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+				.getUserVariable(TEST_USERVARIABLE, null);
+		assertEquals("Variable changed, but should not!", INITIALIZED_VALUE, userVariable.getValue());
+	}
+
+	public void testSetVariableWithNumericalStringFormula() {
 
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
-		ChangeVariableBrick changeBrick = new ChangeVariableBrick(testSprite, new Formula(CHANGE_VARIABLE_VALUE));
-
+		String myString = "155";
 		Formula validFormula = new Formula(0);
-		validFormula.setRoot(new FormulaElement(ElementType.OPERATOR, Operators.SMALLER_THAN.name(), null,
-				new FormulaElement(ElementType.NUMBER, "1", null), new FormulaElement(ElementType.NUMBER, "2", null)));
-
-		testScript = new StartScript(testSprite);
-
-		testScript.addBrick(changeBrick);
-
+		validFormula.setRoot(new FormulaElement(ElementType.STRING, myString, null, null, null));
+		SetVariableBrick setVariableBrick = new SetVariableBrick(testSprite, validFormula, userVariable);
+		testScript.addBrick(setVariableBrick);
 		testSprite.addScript(testScript);
 		project.addSprite(testSprite);
-
-		ProjectManager.getInstance().setCurrentSprite(testSprite);
-		ProjectManager.getInstance().setCurrentScript(testScript);
-
 		testSprite.createStartScriptActionSequence();
-
-		testSprite.look.act(100f);
+		testSprite.look.act(1f);
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
+		assertEquals("String UserVariable not changed!", Double.valueOf(myString), userVariable.getValue());
+	}
 
-		assertEquals("Variable changed, but should not!", 0, ((Double) userVariable.getValue()).intValue());
-		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
+	public void testSetVariableWithStringFormula() {
 
+		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+				.getUserVariable(TEST_USERVARIABLE, null);
+
+		String myString = "myString";
+		Formula validFormula = new Formula(0);
+		validFormula.setRoot(new FormulaElement(ElementType.STRING, myString, null, null, null));
+		SetVariableBrick setVariableBrick = new SetVariableBrick(testSprite, validFormula, userVariable);
+		testScript.addBrick(setVariableBrick);
+		testSprite.addScript(testScript);
+		project.addSprite(testSprite);
+		testSprite.createStartScriptActionSequence();
+		testSprite.look.act(1f);
+
+		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+				.getUserVariable(TEST_USERVARIABLE, null);
+		assertEquals("String UserVariable not changed!", myString, (String) userVariable.getValue());
 	}
 }

@@ -39,15 +39,14 @@ public class SetVariableAction extends TemporalAction {
 		if (userVariable == null) {
 			return;
 		}
-		Object value = null;
+		Object value;
 		try {
 			value = changeVariable.interpretDouble(sprite);
-		} catch (ClassCastException classCastException) {
+		} catch (Exception exception) {
 			value = changeVariable.interpretString(sprite);
 		}
-
+		//		Object value = changeVariable.interpretObject(sprite);
 		userVariable.setValue(value);
-
 	}
 
 	public void setUserVariable(UserVariable userVariable) {

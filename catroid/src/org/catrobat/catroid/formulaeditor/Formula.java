@@ -112,6 +112,10 @@ public class Formula implements Serializable {
 		return String.valueOf(formulaTree.interpretRecursive(sprite));
 	}
 
+	public Object interpretObject(Sprite sprite) {
+		return formulaTree.interpretRecursive(sprite);
+	}
+
 	public void setRoot(FormulaElement formula) {
 		displayText = null;
 		formulaTree = formula;
