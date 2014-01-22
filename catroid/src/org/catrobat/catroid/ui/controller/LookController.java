@@ -31,7 +31,9 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -75,6 +77,8 @@ public final class LookController {
 	public static final String SHARED_PREFERENCE_NAME = "showDetailsLooks";
 
 	private static final LookController INSTANCE = new LookController();
+
+	private Uri originalUri;
 
 	private LookController() {
 	}
@@ -211,6 +215,26 @@ public final class LookController {
 			Utils.showErrorDialog(activity, R.string.error_load_image);
 			return;
 		}
+		// hack for android 4.4
+		if (originalImagePath == null && Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			String id = originalUri.getLastPathSegment().split(":")[1];
+			final String[] imageColumns = { MediaStore.Images.Media.DATA };
+			final String imageOrderBy = null;
+
+			Uri uri;
+			uri = getUriInternalExternal();
+			String selectedImagePath = null;
+
+			Cursor imageCursor = fragment.getActivity().getContentResolver()
+					.query(uri, imageColumns, MediaStore.Images.Media._ID + "=" + id, null, imageOrderBy);
+
+			if (imageCursor.moveToFirst()) {
+				selectedImagePath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+				originalImagePath = selectedImagePath;
+			}
+
+		}
+
 		copyImageToCatroid(originalImagePath, activity, lookDataList, fragment);
 	}
 
@@ -281,8 +305,11 @@ public final class LookController {
 			LookFragment fragment) {
 		String originalImagePath = "";
 
+		this.originalUri = intent.getData();
+
 		//get path of image - will work for most applications
 		Bundle bundle = intent.getExtras();
+
 		if (bundle != null) {
 			originalImagePath = bundle.getString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT);
 		}
@@ -294,6 +321,16 @@ public final class LookController {
 		} else {
 			copyImageToCatroid(originalImagePath, activity, lookDataList, fragment);
 		}
+	}
+
+	// By using this method get the Uri of Internal/External Storage for Media
+	private Uri getUriInternalExternal() {
+		String state = Environment.getExternalStorageState();
+		if (!state.equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+			return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+		}
+
+		return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 	}
 
 	public void loadPocketPaintImageIntoCatroid(Intent intent, Activity activity, LookData selectedLookData) {
