@@ -28,9 +28,13 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ChangeBrightnessByNAction;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.FormulaElement;
+import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 
 public class ChangeBrightnessByNActionTest extends AndroidTestCase {
 
+	private static final float INITIALIZED_VALUE = 100f;
+	private static final Formula BRIGHTNESS_FORMULA = new Formula(33.3f);
 	private final Formula brighter = new Formula(50.5f);
 	private final Formula dimmer = new Formula(-20.8f);
 
@@ -65,5 +69,25 @@ public class ChangeBrightnessByNActionTest extends AndroidTestCase {
 			fail("Execution of ChangeBrightnessByNBrick with null Sprite did not cause a NullPointerException to be thrown");
 		} catch (NullPointerException expected) {
 		}
+	}
+
+	public void testStringFormula() {
+		Sprite sprite = new Sprite("testSprite");
+		ChangeBrightnessByNAction action = ExtendedActions.changeBrightnessByN(sprite, new Formula(new FormulaElement(
+				ElementType.STRING, String.valueOf(BRIGHTNESS_FORMULA.interpretFloat(sprite)), null)));
+		sprite.look.addAction(action);
+		action.act(1.0f);
+		assertEquals("Incorrect sprite brightness value after ChangeBrightnessByNBrick executed", INITIALIZED_VALUE
+				+ BRIGHTNESS_FORMULA.interpretFloat(sprite), sprite.look.getBrightnessInUserInterfaceDimensionUnit());
+		sprite.look.removeAction(action);
+
+		String newStringBrightness = "hallo";
+		action = ExtendedActions.changeBrightnessByN(sprite, new Formula(new FormulaElement(ElementType.STRING,
+				newStringBrightness, null)));
+		sprite.look.addAction(action);
+		action.act(1.0f);
+		assertEquals("Incorrect sprite brightness value after ChangeBrightnessByNBrick executed", INITIALIZED_VALUE
+				+ BRIGHTNESS_FORMULA.interpretFloat(sprite), sprite.look.getBrightnessInUserInterfaceDimensionUnit());
+		sprite.look.removeAction(action);
 	}
 }
