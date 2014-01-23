@@ -30,12 +30,11 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.formulaeditor.FormulaElement;
-import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
 public class ChangeVariableActionTest extends AndroidTestCase {
 
+	private static final String NOT_NUMERICAL_STRING = "changeVariable";
 	private static final String TEST_USERVARIABLE = "testUservariable";
 	private static final double CHANGE_VARIABLE_VALUE = 11;
 	private static final double INITIALIZED_VALUE = 0.0;
@@ -93,9 +92,7 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
-		String value = "3.14";
-		Formula changeFormula = new Formula(0);
-		changeFormula.setRoot(new FormulaElement(ElementType.STRING, value, null, null, null));
+		Formula changeFormula = new Formula(String.valueOf(CHANGE_VARIABLE_VALUE));
 		ChangeVariableBrick changeVariableBrick = new ChangeVariableBrick(testSprite, changeFormula, userVariable);
 		testScript.addBrick(changeVariableBrick);
 		testSprite.addScript(testScript);
@@ -105,7 +102,7 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("UserVariable did not change!", Double.valueOf(value), userVariable.getValue());
+		assertEquals("UserVariable did not change!", Double.valueOf(CHANGE_VARIABLE_VALUE), userVariable.getValue());
 	}
 
 	public void testChangeUserVariableWithStringFormula() {
@@ -113,9 +110,7 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
-		String value = "myString";
-		Formula validFormula = new Formula(0);
-		validFormula.setRoot(new FormulaElement(ElementType.STRING, value, null, null, null));
+		Formula validFormula = new Formula(NOT_NUMERICAL_STRING);
 		ChangeVariableBrick changeVariableBrick = new ChangeVariableBrick(testSprite, validFormula, userVariable);
 		testScript.addBrick(changeVariableBrick);
 		testSprite.addScript(testScript);
