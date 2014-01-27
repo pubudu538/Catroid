@@ -41,11 +41,8 @@ import java.util.List;
 
 public class ParserTestStrings extends AndroidTestCase {
 
-	private static final double DELTA = 0.01;
 	private Sprite testSprite;
 	private Project project;
-	public static final String STRING_BEGIN_END = "\'";
-	public static final String USERVARIABLE_BEGIN_END = "\"";
 	private static final double USER_VARIABLE_1_VALUE_TYPE_DOUBLE = 888.88;
 	private static final String USER_VARIABLE_2_VALUE_TYPE_STRING = "another String";
 	private static final String PROJECT_USER_VARIABLE_NAME = "projectUserVariable";
@@ -341,6 +338,101 @@ public class ParserTestStrings extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.EQUAL + secondOperand, parseTree);
 		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.EQUAL.name()
 				+ secondOperand, false, (Double) parseTree.interpretRecursive(testSprite) == 1d);
+	}
+
+	public void testAddition() {
+		String firstOperand = "1.3";
+		String secondOperand = "3";
+		List<InternToken> internTokenList = new LinkedList<InternToken>();
+		internTokenList.add(new InternToken(InternTokenType.STRING, firstOperand));
+		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.PLUS.name()));
+		internTokenList.add(new InternToken(InternTokenType.STRING, secondOperand));
+		InternFormulaParser internParser = new InternFormulaParser(internTokenList);
+		FormulaElement parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.PLUS + secondOperand, parseTree);
+		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.PLUS.name()
+				+ secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				parseTree.interpretRecursive(testSprite));
+
+		firstOperand = "1.9";
+		secondOperand = "3.14";
+		internTokenList = new LinkedList<InternToken>();
+		internTokenList.add(new InternToken(InternTokenType.NUMBER, firstOperand));
+		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.PLUS.name()));
+		internTokenList.add(new InternToken(InternTokenType.STRING, secondOperand));
+		internParser = new InternFormulaParser(internTokenList);
+		parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.PLUS + secondOperand, parseTree);
+		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.PLUS.name()
+				+ secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				parseTree.interpretRecursive(testSprite));
+
+		firstOperand = "1.9";
+		secondOperand = "3.14";
+		internTokenList = new LinkedList<InternToken>();
+		internTokenList.add(new InternToken(InternTokenType.STRING, firstOperand));
+		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.PLUS.name()));
+		internTokenList.add(new InternToken(InternTokenType.NUMBER, secondOperand));
+		internParser = new InternFormulaParser(internTokenList);
+		parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.PLUS + secondOperand, parseTree);
+		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.PLUS.name()
+				+ secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				parseTree.interpretRecursive(testSprite));
+
+		firstOperand = "NotANumber";
+		secondOperand = "3.14";
+		internTokenList = new LinkedList<InternToken>();
+		internTokenList.add(new InternToken(InternTokenType.STRING, firstOperand));
+		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.PLUS.name()));
+		internTokenList.add(new InternToken(InternTokenType.STRING, secondOperand));
+		internParser = new InternFormulaParser(internTokenList);
+		parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.PLUS + secondOperand, parseTree);
+		//		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.PLUS.name()
+		//				+ secondOperand, new NumberFormatException("Nan"), parseTree.interpretRecursive(testSprite));
+		try {
+			parseTree.interpretRecursive(testSprite);
+			fail("Formula interpretation is not as expected: " + firstOperand + Operators.PLUS.name() + secondOperand);
+		} catch (Exception exception) {
+			assertEquals("Wrong exception message", exception.getMessage(), String.valueOf(Double.NaN));
+		}
+	}
+
+	public void testFunctions() {
+		String firstParaneter = "1.3";
+		List<InternToken> internTokenList = buildSingleParameterFunction(Functions.SQRT, InternTokenType.STRING,
+				firstParaneter);
+		InternFormulaParser internParser = new InternFormulaParser(internTokenList);
+		FormulaElement parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + Functions.SQRT + "(" + firstParaneter + ")", parseTree);
+		assertEquals("Formula interpretation is not as expected: " + Functions.SQRT + "(" + firstParaneter + ")",
+				Math.sqrt(Double.valueOf(firstParaneter)), parseTree.interpretRecursive(testSprite));
+
+		firstParaneter = "NotANumber";
+		internTokenList = buildSingleParameterFunction(Functions.SQRT, InternTokenType.STRING, firstParaneter);
+		internParser = new InternFormulaParser(internTokenList);
+		parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + Functions.SQRT + "(" + firstParaneter + ")", parseTree);
+		assertEquals("Formula interpretation is not as expected: " + Functions.SQRT + "(" + firstParaneter + ")", 0d,
+				parseTree.interpretRecursive(testSprite));
+	}
+
+	public void testLogic() {
+		String firstOperand = "1.3";
+		String secondOperand = "3";
+		List<InternToken> internTokenList = new LinkedList<InternToken>();
+		internTokenList.add(new InternToken(InternTokenType.STRING, firstOperand));
+		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.SMALLER_THAN.name()));
+		internTokenList.add(new InternToken(InternTokenType.STRING, secondOperand));
+		InternFormulaParser internParser = new InternFormulaParser(internTokenList);
+		FormulaElement parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.SMALLER_THAN + secondOperand,
+				parseTree);
+		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.SMALLER_THAN.name()
+				+ secondOperand, Double.valueOf(firstOperand) < Double.valueOf(secondOperand),
+				((Double) parseTree.interpretRecursive(testSprite)) == 1d);
+
 	}
 
 	public void testLengthWithUserVariableAsParameterInterpretation() {

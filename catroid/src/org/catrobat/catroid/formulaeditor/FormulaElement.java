@@ -296,10 +296,6 @@ public class FormulaElement implements Serializable {
 				int index = ((Double) left).intValue() - 1;
 				right = rightChild.interpretRecursive(sprite);
 
-				//				if (rightChild.type == ElementType.USER_VARIABLE) {
-				//					value = handleLetterUserVariableParameter(sprite);
-				//				}
-
 				if (index < 0) {
 					return "";
 				} else if (index >= String.valueOf(right).length()) {
@@ -364,13 +360,13 @@ public class FormulaElement implements Serializable {
 			try {
 				leftObject = leftChild.interpretRecursive(sprite);
 			} catch (NumberFormatException numberFormatException) {
-				leftObject = new Double(0);
+				leftObject = new Double(Double.NaN);
 			}
 
 			try {
 				rightObject = rightChild.interpretRecursive(sprite);
 			} catch (NumberFormatException numberFormatException) {
-				rightObject = new Double(0);
+				rightObject = new Double(Double.NaN);
 			}
 
 			Double left;
@@ -378,52 +374,52 @@ public class FormulaElement implements Serializable {
 
 			switch (operator) {
 				case PLUS:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left + right;
 				case MINUS:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left - right;
 				case MULT:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left * right;
 				case DIVIDE:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left / right;
 				case POW:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return java.lang.Math.pow(left, right);
 				case EQUAL:
 					return interpretOperatorEqual(leftObject, rightObject);
 				case NOT_EQUAL:
 					return interpretOperatorEqual(leftObject, rightObject) == 1d ? 0d : 1d;
 				case GREATER_THAN:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left.compareTo(right) > 0 ? 1d : 0d;
 				case GREATER_OR_EQUAL:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left.compareTo(right) >= 0 ? 1d : 0d;
 				case SMALLER_THAN:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left.compareTo(right) < 0 ? 1d : 0d;
 				case SMALLER_OR_EQUAL:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left.compareTo(right) <= 0 ? 1d : 0d;
 				case LOGICAL_AND:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return (left * right) != 0d ? 1d : 0d;
 				case LOGICAL_OR:
-					left = (Double) interpretOperatorDefault(leftObject);
-					right = (Double) interpretOperatorDefault(rightObject);
+					left = interpretOperatorDefault(leftObject);
+					right = interpretOperatorDefault(rightObject);
 					return left != 0d || right != 0d ? 1d : 0d;
 			}
 
@@ -497,7 +493,11 @@ public class FormulaElement implements Serializable {
 			}
 
 			if (isParentAFunction) {
-				return Double.valueOf(0.0);
+				try {
+					return Double.valueOf(value);
+				} catch (NumberFormatException numberFormatexception) {
+					return Double.valueOf(0);
+				}
 			}
 
 			boolean isParentAOperator = Operators.getOperatorByValue(parent.value) != null;
@@ -549,11 +549,11 @@ public class FormulaElement implements Serializable {
 		return 0d;
 	}
 
-	private Object interpretOperatorDefault(Object object) throws NumberFormatException {
+	private Double interpretOperatorDefault(Object object) throws NumberFormatException {
 		if (object instanceof String) {
 			return Double.valueOf((String) object);
 		} else {
-			return object;
+			return (Double) object;
 		}
 	}
 
@@ -574,7 +574,7 @@ public class FormulaElement implements Serializable {
 			return Double.MAX_VALUE;
 		}
 		if (((Double) valueToCheck).isNaN()) {
-			throw new NumberFormatException("NaN");
+			throw new NumberFormatException(String.valueOf(Double.NaN));
 		}
 
 		return valueToCheck;
@@ -686,23 +686,6 @@ public class FormulaElement implements Serializable {
 			}
 		}
 
-	}
-
-	private String handleLetterUserVariableParameter(Sprite sprite) {
-		UserVariablesContainer userVariableContainer = ProjectManager.getInstance().getCurrentProject()
-				.getUserVariables();
-		UserVariable userVariable = userVariableContainer.getUserVariable(rightChild.value, sprite);
-
-		Object userVariableValue = userVariable.getValue();
-		if (userVariableValue instanceof String) {
-			return String.valueOf(userVariableValue);
-		} else {
-			if (isInteger((Double) userVariableValue)) {
-				return Integer.toString(((Double) userVariableValue).intValue());
-			} else {
-				return Double.toString(((Double) userVariableValue));
-			}
-		}
 	}
 
 	public boolean isSingleNumberFormula() {
