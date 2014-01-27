@@ -301,7 +301,7 @@ public class FormulaElement implements Serializable {
 				} else if (index >= String.valueOf(right).length()) {
 					return "";
 				}
-				return String.valueOf(right).charAt(index);
+				return String.valueOf(String.valueOf(right).charAt(index));
 			case LENGTH:
 				if (leftChild == null) {
 					return 0d;
