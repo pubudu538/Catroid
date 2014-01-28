@@ -39,7 +39,7 @@ import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserVariablesInterpretationTest extends AndroidTestCase {
+public class ParserTestUserVariables extends AndroidTestCase {
 
 	private static final double USER_VARIABLE_1_VALUE_TYPE_DOUBLE = 5d;
 	private static final String PROJECT_USER_VARIABLE = "projectUserVariable";

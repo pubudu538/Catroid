@@ -263,4 +263,91 @@ public class ParserTestOperators extends AndroidTestCase {
 				"0", TRUE, testSprite);
 	}
 
+	public void testAddition() {
+		String firstOperand = "1.3";
+		String secondOperand = "3";
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.PLUS,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.PLUS,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
+
+		firstOperand = "NotANumber";
+		secondOperand = "3.14";
+		FormulaEditorUtil.testNotANumberWithBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
+				InternTokenType.STRING, secondOperand, testSprite);
+	}
+
+	public void testDivision() {
+		String firstOperand = "9.0";
+		String secondOperand = "2";
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.DIVIDE,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) / Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.DIVIDE,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) / Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.DIVIDE,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) / Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.DIVIDE,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) / Double.valueOf(secondOperand),
+				testSprite);
+
+		firstOperand = "NotANumber";
+		secondOperand = "3.14";
+		FormulaEditorUtil.testNotANumberWithBinaryOperator(InternTokenType.STRING, firstOperand, Operators.DIVIDE,
+				InternTokenType.STRING, secondOperand, testSprite);
+	}
+
+	public void testMultiplication() {
+		String firstOperand = "9.0";
+		String secondOperand = "2";
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.MULT,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) * Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.MULT,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) * Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.MULT,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) * Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.MULT,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) * Double.valueOf(secondOperand),
+				testSprite);
+
+		firstOperand = "NotANumber";
+		secondOperand = "3.14";
+		FormulaEditorUtil.testNotANumberWithBinaryOperator(InternTokenType.STRING, firstOperand, Operators.MULT,
+				InternTokenType.STRING, secondOperand, testSprite);
+	}
+
+	public void testSubstraction() {
+		String firstOperand = "9.0";
+		String secondOperand = "2";
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.MINUS,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) - Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.MINUS,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) - Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.MINUS,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) - Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.MINUS,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) - Double.valueOf(secondOperand),
+				testSprite);
+
+		firstOperand = "NotANumber";
+		secondOperand = "3.14";
+		FormulaEditorUtil.testNotANumberWithBinaryOperator(InternTokenType.STRING, firstOperand, Operators.MINUS,
+				InternTokenType.STRING, secondOperand, testSprite);
+	}
 }

@@ -63,7 +63,6 @@ public class ParserTestStringFunctions extends AndroidTestCase {
 				USER_VARIABLE_2_VALUE_TYPE_STRING);
 	}
 
-
 	public void testLength() {
 		String firstParameter = "testString";
 		FormulaEditorUtil.testSingleParameterFunction(Functions.LENGTH, InternTokenType.STRING, firstParameter,
@@ -200,47 +199,4 @@ public class ParserTestStringFunctions extends AndroidTestCase {
 						+ secondParameter, testSprite);
 	}
 
-	public void testPlus() {
-		String firstOperand = "1.3";
-		String secondOperand = "3";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
-				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
-				testSprite);
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.PLUS,
-				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
-				testSprite);
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
-				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
-				testSprite);
-
-		firstOperand = "NotANumber";
-		secondOperand = "3.14";
-		List<InternToken> internTokenList = new LinkedList<InternToken>();
-		internTokenList.add(new InternToken(InternTokenType.STRING, firstOperand));
-		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.PLUS.name()));
-		internTokenList.add(new InternToken(InternTokenType.STRING, secondOperand));
-		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.PLUS + secondOperand, parseTree);
-		try {
-			parseTree.interpretRecursive(testSprite);
-			fail("Formula interpretation is not as expected: " + firstOperand + Operators.PLUS.name() + secondOperand);
-		} catch (Exception exception) {
-			assertEquals("Wrong exception message", exception.getMessage(), String.valueOf(Double.NaN));
-		}
-	}
-
-	public void testLogic() {
-		String firstOperand = "1.3";
-		String secondOperand = "3";
-		List<InternToken> internTokenList = new LinkedList<InternToken>();
-		internTokenList.add(new InternToken(InternTokenType.STRING, firstOperand));
-		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.SMALLER_THAN.name()));
-		internTokenList.add(new InternToken(InternTokenType.STRING, secondOperand));
-		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly: " + firstOperand + Operators.SMALLER_THAN + secondOperand,
-				parseTree);
-		assertEquals("Formula interpretation is not as expected: " + firstOperand + Operators.SMALLER_THAN.name()
-				+ secondOperand, Double.valueOf(firstOperand) < Double.valueOf(secondOperand),
-				((Double) parseTree.interpretRecursive(testSprite)) == 1d);
-	}
 }

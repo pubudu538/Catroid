@@ -127,4 +127,25 @@ public class FormulaEditorUtil {
 				parseTree.interpretRecursive(testSprite));
 	}
 
+	public static void testNotANumberWithBinaryOperator(InternTokenType firstInternTokenType, String firstOperand,
+			Operators operatorType, InternTokenType secondInternTokenType, String secondOperand, Sprite testSprite) {
+
+		List<InternToken> internTokenList = new LinkedList<InternToken>();
+		internTokenList.add(new InternToken(firstInternTokenType, firstOperand));
+		internTokenList.add(new InternToken(InternTokenType.OPERATOR, operatorType.name()));
+		internTokenList.add(new InternToken(secondInternTokenType, secondOperand));
+		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
+
+		InstrumentationTestCase.assertNotNull("Formula is not parsed correctly: " + firstOperand + operatorType
+				+ secondOperand, parseTree);
+		try {
+			parseTree.interpretRecursive(testSprite);
+			InstrumentationTestCase.fail("Formula interpretation is not as expected: " + firstOperand + operatorType
+					+ secondOperand);
+		} catch (Exception exception) {
+			InstrumentationTestCase.assertEquals("Wrong exception message", exception.getMessage(),
+					String.valueOf(Double.NaN));
+		}
+	}
+
 }
