@@ -206,25 +206,30 @@ public class FormulaElement implements Serializable {
 
 		switch (function) {
 			case SIN:
-				return java.lang.Math.sin(Math.toRadians((Double) left));
+				return left instanceof String ? 0d : java.lang.Math.sin(Math.toRadians((Double) left));
 
 			case COS:
-				return java.lang.Math.cos(Math.toRadians((Double) left));
+				return left instanceof String ? 0d : java.lang.Math.cos(Math.toRadians((Double) left));
 
 			case TAN:
-				return java.lang.Math.tan(Math.toRadians((Double) left));
+				return left instanceof String ? 0d : java.lang.Math.tan(Math.toRadians((Double) left));
 
 			case LN:
-				return java.lang.Math.log((Double) left);
+				return left instanceof String ? 0d : java.lang.Math.log((Double) left);
 
 			case LOG:
-				return java.lang.Math.log10((Double) left);
+				return left instanceof String ? 0d : java.lang.Math.log10((Double) left);
 
 			case SQRT:
-				return java.lang.Math.sqrt((Double) left);
+				return left instanceof String ? 0d : java.lang.Math.sqrt((Double) left);
 
 			case RAND:
 				right = rightChild.interpretRecursive(sprite);
+
+				if (left instanceof String || right instanceof String) {
+					return 0d;
+				}
+
 				Double minimum = java.lang.Math.min((Double) left, (Double) right);
 				Double maximum = java.lang.Math.max((Double) left, (Double) right);
 
@@ -246,17 +251,23 @@ public class FormulaElement implements Serializable {
 				}
 
 			case ABS:
-				return java.lang.Math.abs((Double) left);
+				return left instanceof String ? 0d : java.lang.Math.abs((Double) left);
 
 			case ROUND:
-				return (double) java.lang.Math.round((Double) left);
+				return left instanceof String ? 0d : (double) java.lang.Math.round((Double) left);
 
 			case PI:
 				return java.lang.Math.PI;
 
 			case MOD:
+				right = rightChild.interpretRecursive(sprite);
+
+				if (left instanceof String || right instanceof String) {
+					return 0d;
+				}
+
 				double dividend = (Double) left;
-				double divisor = (Double) rightChild.interpretRecursive(sprite);
+				double divisor = (Double) right;
 
 				if (dividend == 0 || divisor == 0) {
 					return dividend;
@@ -275,19 +286,21 @@ public class FormulaElement implements Serializable {
 				return dividend % divisor;
 
 			case ARCSIN:
-				return java.lang.Math.toDegrees(Math.asin((Double) left));
+				return left instanceof String ? 0d : java.lang.Math.toDegrees(Math.asin((Double) left));
 			case ARCCOS:
-				return java.lang.Math.toDegrees(Math.acos((Double) left));
+				return left instanceof String ? 0d : java.lang.Math.toDegrees(Math.acos((Double) left));
 			case ARCTAN:
-				return java.lang.Math.toDegrees(Math.atan((Double) left));
+				return left instanceof String ? 0d : java.lang.Math.toDegrees(Math.atan((Double) left));
 			case EXP:
-				return java.lang.Math.exp((Double) left);
+				return left instanceof String ? 0d : java.lang.Math.exp((Double) left);
 			case MAX:
 				right = rightChild.interpretRecursive(sprite);
-				return java.lang.Math.max((Double) left, (Double) right);
+				return (left instanceof String || right instanceof String) ? 0d : java.lang.Math.max((Double) left,
+						(Double) right);
 			case MIN:
 				right = rightChild.interpretRecursive(sprite);
-				return java.lang.Math.min((Double) left, (Double) right);
+				return (left instanceof String || right instanceof String) ? 0d : java.lang.Math.min((Double) left,
+						(Double) right);
 			case TRUE:
 				return 1d;
 			case FALSE:
@@ -496,7 +509,7 @@ public class FormulaElement implements Serializable {
 				try {
 					return Double.valueOf(value);
 				} catch (NumberFormatException numberFormatexception) {
-					return Double.valueOf(0);
+					return value;
 				}
 			}
 
@@ -518,9 +531,13 @@ public class FormulaElement implements Serializable {
 	private Double interpretOperatorEqual(Object left, Object right) {
 
 		if (left instanceof String && right instanceof String) {
-			int compareResult = ((String) left).compareTo((String) right);
-			if (compareResult == 0) {
-				return 1d;
+			try {
+				return (Double.valueOf((String) left).compareTo(Double.valueOf((String) right))) == 0 ? 1d : 0;
+			} catch (NumberFormatException numberFormatException) {
+				int compareResult = ((String) left).compareTo((String) right);
+				if (compareResult == 0) {
+					return 1d;
+				}
 			}
 		}
 		if (left instanceof Double && right instanceof String) {

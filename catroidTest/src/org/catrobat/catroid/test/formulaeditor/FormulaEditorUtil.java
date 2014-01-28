@@ -59,7 +59,7 @@ public class FormulaEditorUtil {
 	}
 
 	public static void testDoubleParameterFunction(Functions function, InternTokenType firstInternTokenType,
-			String firstParameter, InternTokenType secondInternTokenType, String secondParameter, String expected,
+			String firstParameter, InternTokenType secondInternTokenType, String secondParameter, Object expected,
 			Sprite testSprite) {
 
 		List<InternToken> internTokenList = buildDoubleParameterFunction(function, firstInternTokenType,
@@ -69,12 +69,12 @@ public class FormulaEditorUtil {
 		InstrumentationTestCase.assertNotNull("Formula is not parsed correctly: " + function.name() + "("
 				+ firstParameter + "," + secondParameter + ")", parseTree);
 		InstrumentationTestCase.assertEquals("Formula interpretation is not as expected! " + function.name() + "("
-				+ firstParameter + "," + secondParameter + ")", expected,
-				(String) parseTree.interpretRecursive(testSprite));
+				+ firstParameter + "," + secondParameter + ")", expected, parseTree.interpretRecursive(testSprite));
 	}
 
-	public static void testBinaryOperator(InternTokenType firstInternTokenType, String firstOperand, Operators operatorType,
-			InternTokenType secondInternTokenType, String secondOperand, Object expected, Sprite testSprite) {
+	public static void testBinaryOperator(InternTokenType firstInternTokenType, String firstOperand,
+			Operators operatorType, InternTokenType secondInternTokenType, String secondOperand, Object expected,
+			Sprite testSprite) {
 		List<InternToken> internTokenList = new LinkedList<InternToken>();
 
 		internTokenList.add(new InternToken(firstInternTokenType, firstOperand));

@@ -39,7 +39,7 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ParserTestStrings extends AndroidTestCase {
+public class ParserTestStringFunctions extends AndroidTestCase {
 
 	private Sprite testSprite;
 	private Project project;
@@ -63,15 +63,6 @@ public class ParserTestStrings extends AndroidTestCase {
 				USER_VARIABLE_2_VALUE_TYPE_STRING);
 	}
 
-	public void testStringInterpretation() {
-		String testString = "testString";
-		List<InternToken> internTokenList = new LinkedList<InternToken>();
-		internTokenList.add(new InternToken(InternTokenType.STRING, testString));
-		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly:" + testString, parseTree);
-		assertEquals("Formula interpretation is not as expected:" + testString, testString,
-				parseTree.interpretRecursive(testSprite));
-	}
 
 	public void testLength() {
 		String firstParameter = "testString";
@@ -209,47 +200,18 @@ public class ParserTestStrings extends AndroidTestCase {
 						+ secondParameter, testSprite);
 	}
 
-	public void testEqual() {
-		String firstOperand = "equalString";
-		String secondOperand = "equalString";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.EQUAL, InternTokenType.STRING,
-				secondOperand, firstOperand.compareTo(secondOperand) == 0, testSprite);
-
-		firstOperand = "1";
-		secondOperand = "1.0";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.EQUAL, InternTokenType.STRING,
-				secondOperand, Double.valueOf(firstOperand).compareTo(Double.valueOf(secondOperand)) == 0, testSprite);
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.EQUAL, InternTokenType.NUMBER,
-				secondOperand, Double.valueOf(firstOperand).compareTo(Double.valueOf(secondOperand)) == 0, testSprite);
-		// TODO
-		//		FormulaEditorUtil.testOperator(Operators.EQUAL, InternTokenType.STRING, firstOperand, InternTokenType.STRING,
-		//				secondOperand, Double.valueOf(firstOperand).compareTo(Double.valueOf(secondOperand)) == 0, testSprite);
-
-		firstOperand = "1.0";
-		secondOperand = "1.9";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.EQUAL, InternTokenType.NUMBER,
-				secondOperand, Double.valueOf(firstOperand).compareTo(Double.valueOf(secondOperand)) == 1, testSprite);
-
-		firstOperand = "!`\"§$%&/()=?";
-		secondOperand = "!`\"§$%&/()=????";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.EQUAL, InternTokenType.STRING,
-				secondOperand, false, testSprite);
-
-		firstOperand = "555.555";
-		secondOperand = "055.77.77";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.EQUAL, InternTokenType.STRING,
-				secondOperand, false, testSprite);
-	}
-
 	public void testPlus() {
 		String firstOperand = "1.3";
 		String secondOperand = "3";
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS, InternTokenType.STRING,
-				secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand), testSprite);
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.PLUS, InternTokenType.STRING,
-				secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand), testSprite);
-		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS, InternTokenType.NUMBER,
-				secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand), testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, firstOperand, Operators.PLUS,
+				InternTokenType.STRING, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, firstOperand, Operators.PLUS,
+				InternTokenType.NUMBER, secondOperand, Double.valueOf(firstOperand) + Double.valueOf(secondOperand),
+				testSprite);
 
 		firstOperand = "NotANumber";
 		secondOperand = "3.14";
@@ -265,24 +227,6 @@ public class ParserTestStrings extends AndroidTestCase {
 		} catch (Exception exception) {
 			assertEquals("Wrong exception message", exception.getMessage(), String.valueOf(Double.NaN));
 		}
-	}
-
-	public void testFunctions() {
-		String firstParaneter = "1.3";
-		List<InternToken> internTokenList = FormulaEditorUtil.buildSingleParameterFunction(Functions.SQRT,
-				InternTokenType.STRING, firstParaneter);
-		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly: " + Functions.SQRT + "(" + firstParaneter + ")", parseTree);
-		assertEquals("Formula interpretation is not as expected: " + Functions.SQRT + "(" + firstParaneter + ")",
-				Math.sqrt(Double.valueOf(firstParaneter)), parseTree.interpretRecursive(testSprite));
-
-		firstParaneter = "NotANumber";
-		internTokenList = FormulaEditorUtil.buildSingleParameterFunction(Functions.SQRT, InternTokenType.STRING,
-				firstParaneter);
-		parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly: " + Functions.SQRT + "(" + firstParaneter + ")", parseTree);
-		assertEquals("Formula interpretation is not as expected: " + Functions.SQRT + "(" + firstParaneter + ")", 0d,
-				parseTree.interpretRecursive(testSprite));
 	}
 
 	public void testLogic() {

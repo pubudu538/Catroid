@@ -72,6 +72,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 
 		assertNotNull("Formula is not parsed correctly: sin(90)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 1d, parseTree.interpretRecursive(testSprite));
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.SIN, InternTokenType.STRING, "45.0",
+				Math.sin(Math.toRadians(45d)), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.SIN, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.SIN, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testCos() {
@@ -87,6 +93,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 
 		assertNotNull("Formula is not parsed correctly: cos(180)", parseTree);
 		assertEquals("Formula interpretation is not as expected", -1d, parseTree.interpretRecursive(testSprite));
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.COS, InternTokenType.STRING, "45.0",
+				Math.cos(Math.toRadians(45d)), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.COS, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.COS, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testTan() {
@@ -103,6 +115,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: tan(180)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 0d,
 				(Double) parseTree.interpretRecursive(testSprite), DELTA);
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.TAN, InternTokenType.STRING, "45.0",
+				Math.tan(Math.toRadians(45d)), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.TAN, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.TAN, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testLn() {
@@ -119,6 +137,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: ln(e)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 1d,
 				(Double) parseTree.interpretRecursive(testSprite), DELTA);
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.LN, InternTokenType.STRING, "45.0", Math.log(45d),
+				testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.LN, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.LN, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testLog() {
@@ -135,6 +159,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: log(10)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 1d,
 				(Double) parseTree.interpretRecursive(testSprite), DELTA);
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.LOG, InternTokenType.STRING, "45.0", Math.log10(45),
+				testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.LOG, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.LOG, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testPi() {
@@ -164,6 +194,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: sqrt(100)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 10d,
 				(Double) parseTree.interpretRecursive(testSprite), DELTA);
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.SQRT, InternTokenType.STRING, "45.0", Math.sqrt(45),
+				testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.SQRT, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.SQRT, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testRandomNaturalNumbers() {
@@ -182,6 +218,15 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: random(0,1)", parseTree);
 		Double result = (Double) parseTree.interpretRecursive(testSprite);
 		assertTrue("Formula interpretation is not as expected", result == 0d || result == 1d);
+
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.RAND, InternTokenType.STRING, "1",
+				InternTokenType.STRING, "1", 1d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.RAND, InternTokenType.STRING, "",
+				InternTokenType.STRING, "3", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.RAND, InternTokenType.STRING, "5",
+				InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.RAND, InternTokenType.STRING, "5",
+				InternTokenType.STRING, "NotANumber", 0d, testSprite);
 	}
 
 	public void testRound() {
@@ -198,6 +243,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: round(1.33333)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 1d,
 				(Double) parseTree.interpretRecursive(testSprite), DELTA);
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ROUND, InternTokenType.STRING, "45.55555",
+				((Long) Math.round(45.55555)).doubleValue(), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ROUND, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ROUND, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testMod() {
@@ -286,6 +337,15 @@ public class ParserTestFunctions extends AndroidTestCase {
 			assertEquals("Formula interpretation is not as expected", 1d + offset,
 					(Double) parseTree.interpretRecursive(testSprite), DELTA);
 		}
+
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MOD, InternTokenType.STRING, "5",
+				InternTokenType.STRING, "3", 2d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MOD, InternTokenType.STRING, "",
+				InternTokenType.STRING, "3", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MOD, InternTokenType.STRING, "5",
+				InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MOD, InternTokenType.STRING, "5",
+				InternTokenType.STRING, "NotANumber", 0d, testSprite);
 	}
 
 	public void testAbs() {
@@ -303,6 +363,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: abs(-1)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 1d,
 				(Double) parseTree.interpretRecursive(testSprite), DELTA);
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ABS, InternTokenType.STRING, "45.666",
+				Math.abs(45.666), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ABS, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ABS, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testInvalidFunction() {
@@ -357,6 +423,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 
 		assertNotNull("Formula is not parsed correctly: arcsin(1)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 90d, parseTree.interpretRecursive(testSprite));
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCSIN, InternTokenType.STRING, "0.666",
+				Math.toDegrees(Math.asin(0.666)), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCSIN, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCSIN, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testArccos() {
@@ -372,6 +444,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 
 		assertNotNull("Formula is not parsed correctly: arccos(0)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 90d, parseTree.interpretRecursive(testSprite));
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCCOS, InternTokenType.STRING, "0.666",
+				Math.toDegrees(Math.acos(0.666)), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCCOS, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCCOS, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testArctan() {
@@ -387,6 +465,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 
 		assertNotNull("Formula is not parsed correctly: arctan(1)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 45d, parseTree.interpretRecursive(testSprite));
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCTAN, InternTokenType.STRING, "45.666",
+				Math.toDegrees(Math.atan(45.666)), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCTAN, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.ARCTAN, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testExp() {
@@ -403,6 +487,12 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: exp(2)", parseTree);
 		assertEquals("Formula interpretation is not as expected", Math.exp(2.0),
 				parseTree.interpretRecursive(testSprite));
+
+		FormulaEditorUtil.testSingleParameterFunction(Functions.EXP, InternTokenType.STRING, "45.666",
+				Math.exp(45.666), testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.EXP, InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testSingleParameterFunction(Functions.EXP, InternTokenType.STRING, "NotANumber", 0d,
+				testSprite);
 	}
 
 	public void testMax() {
@@ -421,6 +511,14 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: max(3,4)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 4d, parseTree.interpretRecursive(testSprite));
 
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MAX, InternTokenType.STRING, "33.22",
+				InternTokenType.STRING, "22.33", 33.22, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MAX, InternTokenType.STRING, "",
+				InternTokenType.STRING, "22.33", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MAX, InternTokenType.STRING, "",
+				InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MAX, InternTokenType.STRING, "33.22",
+				InternTokenType.STRING, "NotANumber", 0d, testSprite);
 	}
 
 	public void testMin() {
@@ -439,6 +537,14 @@ public class ParserTestFunctions extends AndroidTestCase {
 		assertNotNull("Formula is not parsed correctly: min(3,4)", parseTree);
 		assertEquals("Formula interpretation is not as expected", 3d, parseTree.interpretRecursive(testSprite));
 
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MIN, InternTokenType.STRING, "33.22",
+				InternTokenType.STRING, "22.33", 22.33, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MIN, InternTokenType.STRING, "",
+				InternTokenType.STRING, "22.33", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MIN, InternTokenType.STRING, "",
+				InternTokenType.STRING, "", 0d, testSprite);
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.MIN, InternTokenType.STRING, "33.22",
+				InternTokenType.STRING, "NotANumber", 0d, testSprite);
 	}
 
 }

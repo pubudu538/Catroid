@@ -126,6 +126,11 @@ public class ParserTestOperators extends AndroidTestCase {
 				InternTokenType.NUMBER, "1", TRUE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "1", Operators.GREATER_THAN,
 				InternTokenType.NUMBER, "1", FALSE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "2", Operators.GREATER_THAN,
+				InternTokenType.STRING, "1", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.GREATER_THAN,
+				InternTokenType.STRING, "1", FALSE, testSprite);
 	}
 
 	public void testGreaterOrEqualThan() {
@@ -135,6 +140,13 @@ public class ParserTestOperators extends AndroidTestCase {
 				InternTokenType.NUMBER, "1", TRUE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "0", Operators.GREATER_OR_EQUAL,
 				InternTokenType.NUMBER, "1", FALSE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "2", Operators.GREATER_OR_EQUAL,
+				InternTokenType.STRING, "1", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.GREATER_OR_EQUAL,
+				InternTokenType.STRING, "1", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "0", Operators.GREATER_OR_EQUAL,
+				InternTokenType.STRING, "1", FALSE, testSprite);
 	}
 
 	public void testSmallerThan() {
@@ -142,6 +154,11 @@ public class ParserTestOperators extends AndroidTestCase {
 				InternTokenType.NUMBER, "1", FALSE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "0", Operators.SMALLER_THAN,
 				InternTokenType.NUMBER, "1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.SMALLER_THAN,
+				InternTokenType.STRING, "1", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "0", Operators.SMALLER_THAN,
+				InternTokenType.STRING, "1", TRUE, testSprite);
 	}
 
 	public void testSmallerOrEqualThan() {
@@ -151,6 +168,13 @@ public class ParserTestOperators extends AndroidTestCase {
 				InternTokenType.NUMBER, "1", TRUE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "0", Operators.SMALLER_OR_EQUAL,
 				InternTokenType.NUMBER, "1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "2", Operators.SMALLER_OR_EQUAL,
+				InternTokenType.STRING, "1", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.SMALLER_OR_EQUAL,
+				InternTokenType.STRING, "1", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "0", Operators.SMALLER_OR_EQUAL,
+				InternTokenType.STRING, "1", TRUE, testSprite);
 	}
 
 	public void testEqual() {
@@ -158,6 +182,23 @@ public class ParserTestOperators extends AndroidTestCase {
 				TRUE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "5", Operators.EQUAL, InternTokenType.NUMBER, "1",
 				FALSE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "equalString", Operators.EQUAL,
+				InternTokenType.STRING, "equalString", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "1", Operators.EQUAL, InternTokenType.STRING,
+				"1.0", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.EQUAL, InternTokenType.NUMBER,
+				"1.0", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.EQUAL, InternTokenType.STRING,
+				"1.0", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1.0", Operators.EQUAL, InternTokenType.NUMBER,
+				"1.9", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "!`\"§$%&/()=?", Operators.EQUAL,
+				InternTokenType.STRING, "!`\"§$%&/()=????", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "555.555", Operators.EQUAL,
+				InternTokenType.STRING, "055.77.77", FALSE, testSprite);
 	}
 
 	public void testNotEqual() {
@@ -165,11 +206,19 @@ public class ParserTestOperators extends AndroidTestCase {
 				"1", FALSE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "5", Operators.NOT_EQUAL, InternTokenType.NUMBER,
 				"1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.NOT_EQUAL, InternTokenType.STRING,
+				"1", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "5", Operators.NOT_EQUAL, InternTokenType.STRING,
+				"1", TRUE, testSprite);
 	}
 
 	public void testNOT() {
 		FormulaEditorUtil.testUnaryOperator(Operators.LOGICAL_NOT, InternTokenType.NUMBER, "1", FALSE, testSprite);
 		FormulaEditorUtil.testUnaryOperator(Operators.LOGICAL_NOT, InternTokenType.NUMBER, "0", TRUE, testSprite);
+
+		FormulaEditorUtil.testUnaryOperator(Operators.LOGICAL_NOT, InternTokenType.STRING, "1", FALSE, testSprite);
+		FormulaEditorUtil.testUnaryOperator(Operators.LOGICAL_NOT, InternTokenType.STRING, "0", TRUE, testSprite);
 	}
 
 	public void testAND() {
@@ -179,6 +228,18 @@ public class ParserTestOperators extends AndroidTestCase {
 				InternTokenType.NUMBER, "0", FALSE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "1", Operators.LOGICAL_AND,
 				InternTokenType.NUMBER, "1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "0", Operators.LOGICAL_AND,
+				InternTokenType.STRING, "0", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.LOGICAL_AND,
+				InternTokenType.STRING, "0", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.LOGICAL_AND,
+				InternTokenType.STRING, "1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "0", Operators.LOGICAL_AND,
+				InternTokenType.STRING, "0", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.LOGICAL_AND,
+				InternTokenType.NUMBER, "0", FALSE, testSprite);
 	}
 
 	public void testOR() {
@@ -188,6 +249,18 @@ public class ParserTestOperators extends AndroidTestCase {
 				"0", TRUE, testSprite);
 		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "1", Operators.LOGICAL_OR, InternTokenType.NUMBER,
 				"1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "0", Operators.LOGICAL_OR, InternTokenType.STRING,
+				"0", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.LOGICAL_OR, InternTokenType.STRING,
+				"0", TRUE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "1", Operators.LOGICAL_OR, InternTokenType.STRING,
+				"1", TRUE, testSprite);
+
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.STRING, "0", Operators.LOGICAL_OR, InternTokenType.NUMBER,
+				"0", FALSE, testSprite);
+		FormulaEditorUtil.testBinaryOperator(InternTokenType.NUMBER, "1", Operators.LOGICAL_OR, InternTokenType.STRING,
+				"0", TRUE, testSprite);
 	}
 
 }
