@@ -138,7 +138,7 @@ public class FormulaElement implements Serializable {
 		return root;
 	}
 
-	public Object interpretRecursive(Sprite sprite) throws NumberFormatException {
+	public Object interpretRecursive(Sprite sprite) {
 
 		Object returnValue = 0d;
 
@@ -198,7 +198,7 @@ public class FormulaElement implements Serializable {
 		}
 	}
 
-	private Object interpretFunction(Functions function, Sprite sprite) throws NumberFormatException {
+	private Object interpretFunction(Functions function, Sprite sprite) {
 		Object left = null;
 		Object right = null;
 
@@ -376,7 +376,7 @@ public class FormulaElement implements Serializable {
 		}
 	}
 
-	private Object interpretOperator(Operators operator, Sprite sprite) throws NumberFormatException {
+	private Object interpretOperator(Operators operator, Sprite sprite) {
 
 		if (leftChild != null) {// binary operator
 			Object leftObject;
@@ -461,7 +461,7 @@ public class FormulaElement implements Serializable {
 		return 0d;
 	}
 
-	private Object interpretObjectSensor(Sensors sensor, Sprite sprite) throws NumberFormatException {
+	private Object interpretObjectSensor(Sensors sensor, Sprite sprite) {
 		Object returnValue = 0d;
 		switch (sensor) {
 			case OBJECT_BRIGHTNESS:
@@ -489,7 +489,7 @@ public class FormulaElement implements Serializable {
 		return returnValue;
 	}
 
-	private Object interpretString(String value) throws NumberFormatException {
+	private Object interpretString(String value) {
 
 		if (parent == null && type != ElementType.USER_VARIABLE) {
 			Double anotherValue;
@@ -575,7 +575,7 @@ public class FormulaElement implements Serializable {
 		return 0d;
 	}
 
-	private Double interpretOperator(Object object) throws NumberFormatException {
+	private Double interpretOperator(Object object) {
 		if (object instanceof String) {
 			return Double.valueOf((String) object);
 		} else {
@@ -583,7 +583,7 @@ public class FormulaElement implements Serializable {
 		}
 	}
 
-	private Object normalizeDegeneratedDoubleValues(Object valueToCheck) throws NumberFormatException {
+	private Object normalizeDegeneratedDoubleValues(Object valueToCheck) {
 
 		if (valueToCheck instanceof String || valueToCheck instanceof Character) {
 			return valueToCheck;
@@ -599,9 +599,9 @@ public class FormulaElement implements Serializable {
 		if (((Double) valueToCheck).doubleValue() == Double.POSITIVE_INFINITY) {
 			return Double.MAX_VALUE;
 		}
-		if (((Double) valueToCheck).isNaN()) {
-			throw new NumberFormatException(String.valueOf(Double.NaN));
-		}
+		//		if (((Double) valueToCheck).isNaN()) {
+		//			throw new NumberFormatException(String.valueOf(Double.NaN));
+		//		}
 
 		return valueToCheck;
 	}
