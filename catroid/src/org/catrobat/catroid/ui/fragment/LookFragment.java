@@ -509,7 +509,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	}
 
 	public void addLookChooseImage() {
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		Intent intent = new Intent(Intent.ACTION_PICK);
 
 		Bundle bundleForPocketCode = new Bundle();
 		bundleForPocketCode.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, "");
@@ -585,8 +585,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		NewLookDialog dialog = new NewLookDialog();
-		dialog.showDialog(getActivity().getSupportFragmentManager(), this);
+		NewLookDialog dialog = NewLookDialog.newInstance();
+		dialog.showDialog(this);
 	}
 
 	@Override
