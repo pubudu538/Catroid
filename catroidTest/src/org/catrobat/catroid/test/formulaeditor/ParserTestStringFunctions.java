@@ -32,11 +32,9 @@ import org.catrobat.catroid.formulaeditor.Functions;
 import org.catrobat.catroid.formulaeditor.InternFormulaParser;
 import org.catrobat.catroid.formulaeditor.InternToken;
 import org.catrobat.catroid.formulaeditor.InternTokenType;
-import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class ParserTestStringFunctions extends AndroidTestCase {
@@ -94,33 +92,14 @@ public class ParserTestStringFunctions extends AndroidTestCase {
 
 		index = "-5";
 		emptyString = "";
-		List<InternToken> internTokenList = new LinkedList<InternToken>();
-		internTokenList.add(new InternToken(InternTokenType.FUNCTION_NAME, Functions.LETTER.name()));
-		internTokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_OPEN));
-		internTokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.MINUS.name()));
-		internTokenList.add(new InternToken(InternTokenType.NUMBER, "5"));
-		internTokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETER_DELIMITER));
-		internTokenList.add(new InternToken(InternTokenType.STRING, letterString));
-		internTokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_CLOSE));
-		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly: " + Functions.LETTER.name() + "(" + index + "," + letterString
-				+ ")", parseTree);
-		assertEquals("Formula interpretation is not as expected: " + Functions.LETTER.name() + "(" + index + ","
-				+ letterString + ")", emptyString, parseTree.interpretRecursive(testSprite));
+		FormulaEditorUtil.testDoubleParameterFunction(Functions.LETTER, InternTokenType.NUMBER, index,
+				InternTokenType.STRING, letterString, emptyString, testSprite);
 
 		index = "0";
 		emptyString = "";
 		letterString = emptyString;
 		FormulaEditorUtil.testDoubleParameterFunction(Functions.LETTER, InternTokenType.NUMBER, String.valueOf(index),
 				InternTokenType.STRING, letterString, emptyString, testSprite);
-
-		internTokenList = FormulaEditorUtil.buildDoubleParameterFunction(Functions.LETTER, InternTokenType.NUMBER,
-				index, InternTokenType.STRING, letterString);
-		parseTree = new InternFormulaParser(internTokenList).parseFormula();
-		assertNotNull("Formula is not parsed correctly: " + Functions.LETTER.name() + "(" + index + "," + letterString
-				+ ")", parseTree);
-		assertEquals("Formula interpretation is not as expected: " + Functions.LETTER.name() + "(" + index + ","
-				+ letterString + ")", emptyString, parseTree.interpretRecursive(testSprite));
 
 		letterString = "letterString";
 		index = "2";
@@ -130,12 +109,12 @@ public class ParserTestStringFunctions extends AndroidTestCase {
 
 		String firstParameter = "hello";
 		String secondParameter = " world";
-		internTokenList = FormulaEditorUtil.buildDoubleParameterFunction(Functions.JOIN, InternTokenType.STRING,
-				firstParameter, InternTokenType.STRING, secondParameter);
+		List<InternToken> internTokenList = FormulaEditorUtil.buildDoubleParameterFunction(Functions.JOIN,
+				InternTokenType.STRING, firstParameter, InternTokenType.STRING, secondParameter);
 		internTokenList = FormulaEditorUtil.buildSingleParameterFunction(Functions.LENGTH, internTokenList);
 		internTokenList = FormulaEditorUtil.buildDoubleParameterFunction(Functions.LETTER, internTokenList,
 				InternTokenType.STRING, firstParameter + secondParameter);
-		parseTree = new InternFormulaParser(internTokenList).parseFormula();
+		FormulaElement parseTree = new InternFormulaParser(internTokenList).parseFormula();
 		assertNotNull("Formula is not parsed correctly: " + Functions.LETTER.name() + "(" + Functions.LENGTH.name()
 				+ "(" + Functions.JOIN.name() + "(" + firstParameter + "," + secondParameter + ")" + ")" + ","
 				+ firstParameter + secondParameter + ")", parseTree);

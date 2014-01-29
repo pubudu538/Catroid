@@ -105,7 +105,6 @@ public class ParserTestUserVariables extends AndroidTestCase {
 	}
 
 	public void testNotExistingUservariable() {
-
 		List<InternToken> internTokenList = new LinkedList<InternToken>();
 		internTokenList.add(new InternToken(InternTokenType.USER_VARIABLE, "NOT_EXISTING_USER_VARIABLE"));
 		InternFormulaParser internParser = new InternFormulaParser(internTokenList);
@@ -114,7 +113,6 @@ public class ParserTestUserVariables extends AndroidTestCase {
 		assertNull("Invalid user variable parsed:   NOT_EXISTING_USER_VARIABLE)", parseTree);
 		int errorTokenIndex = internParser.getErrorTokenIndex();
 		assertEquals("Error Token Index is not as expected", 0, errorTokenIndex);
-
 	}
 
 	private Formula getUservariableByName(String userVariableName) {

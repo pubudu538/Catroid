@@ -1,3 +1,25 @@
+/**
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *  
+ *  An additional term exception under section 7 of the GNU Affero
+ *  General Public License, version 3, is available at
+ *  http://developer.catrobat.org/license_additional_term
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.catrobat.catroid.test.formulaeditor;
 
 import android.test.InstrumentationTestCase;
@@ -29,6 +51,13 @@ public class FormulaEditorUtil {
 		List<InternToken> tokenList = new LinkedList<InternToken>();
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_NAME, function.name()));
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_OPEN));
+		try {
+			if (Double.valueOf(parameterNumberValue) < 0) {
+				tokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.MINUS.name()));
+				parameterNumberValue = String.valueOf(Math.abs(Double.valueOf(parameterNumberValue)));
+			}
+		} catch (NumberFormatException numberFormatException) { // Do nothing, everything is fine :D!
+		}
 		tokenList.add(new InternToken(firstParameter, parameterNumberValue));
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_CLOSE));
 		return tokenList;
@@ -51,8 +80,22 @@ public class FormulaEditorUtil {
 		List<InternToken> tokenList = new LinkedList<InternToken>();
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_NAME, function.name()));
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_OPEN));
+		try {
+			if (Double.valueOf(firstParameterNumberValue) < 0) {
+				tokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.MINUS.name()));
+				firstParameterNumberValue = String.valueOf(Math.abs(Double.valueOf(firstParameterNumberValue)));
+			}
+		} catch (NumberFormatException numberFormatException) { // Do nothing, everything is fine :D!
+		}
 		tokenList.add(new InternToken(firstParameter, firstParameterNumberValue));
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETER_DELIMITER));
+		try {
+			if (Double.valueOf(secondParameterNumberValue) < 0) {
+				tokenList.add(new InternToken(InternTokenType.OPERATOR, Operators.MINUS.name()));
+				secondParameterNumberValue = String.valueOf(Math.abs(Double.valueOf(secondParameterNumberValue)));
+			}
+		} catch (NumberFormatException numberFormatException) {// Do nothing, everything is fine :D!
+		}
 		tokenList.add(new InternToken(secondParameter, secondParameterNumberValue));
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_CLOSE));
 		return tokenList;
