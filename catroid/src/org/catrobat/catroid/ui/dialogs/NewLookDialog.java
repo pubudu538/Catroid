@@ -22,113 +22,76 @@
  */
 package org.catrobat.catroid.ui.dialogs;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import org.catrobat.catroid.ProjectManager;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.bricks.PointToBrick.SpinnerAdapterWrapper;
-import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.ui.ProgramMenuActivity;
-import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.controller.LookController;
 import org.catrobat.catroid.ui.fragment.LookFragment;
-import org.catrobat.catroid.utils.UtilCamera;
-import org.catrobat.catroid.utils.Utils;
-
-import java.io.File;
-import java.io.IOException;
 
 public class NewLookDialog extends DialogFragment {
 
-    public static final String DIALOG_FRAGMENT_TAG = "dialog_new_look";
+    public static final String TAG = "dialog_new_look";
 
-    private static final int REQUEST_SELECT_IMAGE = 0;
-    private static final int REQUEST_CREATE_POCKET_PAINT_IMAGE = 1;
-    private static final int REQUEST_TAKE_PICTURE = 2;
+    private LookFragment fragment = null;
 
-    private View dialogView;
-    private LookFragment lookFragment = null;
-
-
-    public void showDialog(LookFragment fragment) {
-        lookFragment = fragment;
-        show(lookFragment.getActivity().getSupportFragmentManager(), DIALOG_FRAGMENT_TAG);
+    public void showDialog(Fragment fragment) {
+        if (!(fragment instanceof LookFragment)) {
+            throw new RuntimeException("This dialog (NewLookDialog) can only be called by the LookFragment.");
+        }
+        this.fragment = (LookFragment) fragment;
+        show(fragment.getActivity().getSupportFragmentManager(), TAG);
     }
 
-
-    public static NewLookDialog newInstance()
-    {
-       return new NewLookDialog();
-
+    public static NewLookDialog newInstance() {
+        return new NewLookDialog();
     }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_new_look, null);
+        View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_new_look, null);
         setupPaintroidButton(dialogView);
         setupGalleryButton(dialogView);
         setupCameraButton(dialogView);
 
-        AlertDialog dialog = null;
+        AlertDialog dialog;
         AlertDialog.Builder dialogBuilder = new CustomAlertDialogBuilder(getActivity()).setView(dialogView).setTitle(
                 R.string.new_look_dialog_title);
 
-            dialog = createDialog(dialogBuilder);
-
-
-       dialog.setCanceledOnTouchOutside(true);
+        dialog = createDialog(dialogBuilder);
+        dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
 
     private AlertDialog createDialog(AlertDialog.Builder dialogBuilder) {
-        AlertDialog dialog = dialogBuilder.create();
-        return dialog;
+        return dialogBuilder.create();
     }
-
 
     private void setupPaintroidButton(View parentView) {
         View paintroidButton = parentView.findViewById(R.id.dialog_new_look_paintroid);
 
-        Intent intent = new Intent("android.intent.action.MAIN");
+        final Intent intent = new Intent("android.intent.action.MAIN");
         intent.setComponent(new ComponentName(Constants.POCKET_PAINT_PACKAGE_NAME,
                 Constants.POCKET_PAINT_INTENT_ACTIVITY_NAME));
-        if (LookController.getInstance().checkIfPocketPaintIsInstalled(intent, getActivity())) {
-            paintroidButton.setOnClickListener(new View.OnClickListener() {
 
-                @Override
-                public void onClick(View view) {
-                    lookFragment.addLookDrawNewImage();
+        paintroidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (LookController.getInstance().checkIfPocketPaintIsInstalled(intent, getActivity())) {
+                    fragment.addLookDrawNewImage();
                     NewLookDialog.this.dismiss();
                 }
-            });
-        } else {
-            LinearLayout linearLayout = (LinearLayout) parentView.findViewById(R.id.dialog_new_look_chooser_layout);
-            paintroidButton.setVisibility(View.GONE);
-            linearLayout.setWeightSum(2f);
-        }
+            }
+        });
     }
 
     private void setupGalleryButton(View parentView) {
@@ -138,7 +101,7 @@ public class NewLookDialog extends DialogFragment {
 
             @Override
             public void onClick(View view) {
-                lookFragment.addLookChooseImage();
+                fragment.addLookChooseImage();
                 NewLookDialog.this.dismiss();
             }
         });
@@ -151,11 +114,9 @@ public class NewLookDialog extends DialogFragment {
 
             @Override
             public void onClick(View view) {
-                lookFragment.addLookFromCamera();
+                fragment.addLookFromCamera();
                 NewLookDialog.this.dismiss();
             }
         });
     }
-
-
 }
