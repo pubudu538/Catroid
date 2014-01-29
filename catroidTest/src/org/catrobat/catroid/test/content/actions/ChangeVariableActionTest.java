@@ -30,15 +30,15 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.formulaeditor.FormulaElement;
-import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
-import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
 public class ChangeVariableActionTest extends AndroidTestCase {
 
+	private static final String NOT_NUMERICAL_STRING = "changeVariable";
 	private static final String TEST_USERVARIABLE = "testUservariable";
-	private static final int CHANGE_VARIABLE_VALUE = 11;
+	private static final double CHANGE_VARIABLE_VALUE = 11;
+	private static final double INITIALIZED_VALUE = 0.0;
+
 	private Sprite testSprite;
 	private StartScript testScript;
 	private Project project;
@@ -56,7 +56,7 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
 	}
 
-	public void testChangeUserVariable() throws InterruptedException {
+	public void testChangeUserVariableWithNumericalFormula() {
 
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
@@ -71,37 +71,29 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("Variable not changed", CHANGE_VARIABLE_VALUE, userVariable.getValue().intValue());
+
+		assertEquals("UserVariable did not change", CHANGE_VARIABLE_VALUE, userVariable.getValue());
 	}
 
-	public void testInvalidUserVariable() throws InterruptedException {
+	public void testChangeUserVariableInvalidUserVariable() {
 
-		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.getUserVariable(TEST_USERVARIABLE, null);
-
-		ChangeVariableBrick changeBrick = new ChangeVariableBrick(testSprite, new Formula(CHANGE_VARIABLE_VALUE));
-		Formula validFormula = new Formula(0);
-		validFormula.setRoot(new FormulaElement(ElementType.OPERATOR, Operators.SMALLER_THAN.name(), null,
-				new FormulaElement(ElementType.NUMBER, "1", null), new FormulaElement(ElementType.NUMBER, "2", null)));
+		ChangeVariableBrick changeBrick = new ChangeVariableBrick(testSprite, CHANGE_VARIABLE_VALUE);
 		testScript.addBrick(changeBrick);
 		testSprite.addScript(testScript);
 		project.addSprite(testSprite);
 		testSprite.createStartScriptActionSequence();
 		testSprite.look.act(1f);
 
-		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("Variable changed, but should not!", 0, userVariable.getValue().intValue());
+		assertEquals("UserVariable changed, but should not!", INITIALIZED_VALUE, userVariable.getValue());
 	}
 
-	public void testChangeUserVariableWithString() {
-
+	public void testChangeUserVariableWithNumericalStringFormula() {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
-		String offset = "3";
-		Formula changeFormula = new Formula(0);
-		changeFormula.setRoot(new FormulaElement(ElementType.STRING, offset, null, null, null));
+		Formula changeFormula = new Formula(String.valueOf(CHANGE_VARIABLE_VALUE));
 		ChangeVariableBrick changeVariableBrick = new ChangeVariableBrick(testSprite, changeFormula, userVariable);
 		testScript.addBrick(changeVariableBrick);
 		testSprite.addScript(testScript);
@@ -111,20 +103,15 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("String UserVariable not changed!", Integer.valueOf(offset).intValue(), userVariable.getValue()
-				.intValue());
+		assertEquals("UserVariable did not change!", Double.valueOf(CHANGE_VARIABLE_VALUE), userVariable.getValue());
 	}
 
-	public void testChangeUserVariableWithInvalidString() {
-
+	public void testChangeUserVariableWithStringFormula() {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
-		String myString = "myString";
-		Formula validFormula = new Formula(0);
-		validFormula.setRoot(new FormulaElement(ElementType.STRING, myString, null, null, null));
-		ChangeVariableBrick changeVariableBrick = new ChangeVariableBrick(testSprite,
-				new Formula(CHANGE_VARIABLE_VALUE), userVariable);
+		Formula validFormula = new Formula(NOT_NUMERICAL_STRING);
+		ChangeVariableBrick changeVariableBrick = new ChangeVariableBrick(testSprite, validFormula, userVariable);
 		testScript.addBrick(changeVariableBrick);
 		testSprite.addScript(testScript);
 		project.addSprite(testSprite);
@@ -133,7 +120,6 @@ public class ChangeVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("String UserVariable not changed!", CHANGE_VARIABLE_VALUE, userVariable.getValue().intValue());
+		assertEquals("UserVariable should not have changed!", INITIALIZED_VALUE, userVariable.getValue());
 	}
-
 }

@@ -113,8 +113,12 @@ public class Formula implements Serializable {
 		return ((Double) formulaTree.interpretRecursive(sprite)).floatValue();
 	}
 
-	public String interpretString(Sprite sprite) throws ClassCastException {
-		return (String) formulaTree.interpretRecursive(sprite);
+	public String interpretString(Sprite sprite) {
+		return String.valueOf(formulaTree.interpretRecursive(sprite));
+	}
+
+	public Object interpretObject(Sprite sprite) {
+		return formulaTree.interpretRecursive(sprite);
 	}
 
 	public void setRoot(FormulaElement formula) {
@@ -206,12 +210,16 @@ public class Formula implements Serializable {
 			return context.getString(logicalFormulaResultIdentifier);
 		} else if (formulaTree.hasFunctionStringReturnType() || formulaTree.getElementType() == ElementType.STRING) {
 			return interpretString(sprite);
+		} else if (formulaTree.isUserVariableWithTypeString(sprite)) {
+			UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+			UserVariable userVariable = userVariables.getUserVariable(formulaTree.getValue(), sprite);
+			return (String) userVariable.getValue();
 		} else {
 			float interpretationResult;
 			try {
 				interpretationResult = (float) this.interpretDouble(sprite);
 			} catch (NumberFormatException numberFormatException) {
-				return String.valueOf("NaN");
+				return String.valueOf(Double.NaN);
 			}
 			interpretationResult *= 100;
 			interpretationResult = Math.round(interpretationResult) / 100f;

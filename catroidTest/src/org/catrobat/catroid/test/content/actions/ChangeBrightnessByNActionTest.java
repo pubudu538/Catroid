@@ -31,6 +31,9 @@ import org.catrobat.catroid.formulaeditor.Formula;
 
 public class ChangeBrightnessByNActionTest extends AndroidTestCase {
 
+	private static final float INITIALIZED_VALUE = 100f;
+	private static final float CHANGE_VALUE = 33.3f;
+	private static final String NOT_NUMERICAL_STRING = "brightness";
 	private final Formula brighter = new Formula(50.5f);
 	private final Formula dimmer = new Formula(-20.8f);
 
@@ -65,5 +68,19 @@ public class ChangeBrightnessByNActionTest extends AndroidTestCase {
 			fail("Execution of ChangeBrightnessByNBrick with null Sprite did not cause a NullPointerException to be thrown");
 		} catch (NullPointerException expected) {
 		}
+	}
+
+	public void testStringFormula() {
+		Sprite sprite = new Sprite("testSprite");
+		ChangeBrightnessByNAction action = ExtendedActions.changeBrightnessByN(sprite,
+				new Formula(String.valueOf(CHANGE_VALUE)));
+		action.act(1.0f);
+		assertEquals("Incorrect sprite brightness value after ChangeBrightnessByNBrick executed", INITIALIZED_VALUE
+				+ CHANGE_VALUE, sprite.look.getBrightnessInUserInterfaceDimensionUnit());
+
+		action = ExtendedActions.changeBrightnessByN(sprite, new Formula(NOT_NUMERICAL_STRING));
+		action.act(1.0f);
+		assertEquals("Incorrect sprite brightness value after ChangeBrightnessByNBrick executed", INITIALIZED_VALUE
+				+ CHANGE_VALUE, sprite.look.getBrightnessInUserInterfaceDimensionUnit());
 	}
 }

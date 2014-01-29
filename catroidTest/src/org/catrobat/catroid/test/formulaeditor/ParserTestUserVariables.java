@@ -39,13 +39,15 @@ import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserVariablesInterpretationTest extends AndroidTestCase {
+public class ParserTestUserVariables extends AndroidTestCase {
 
-	private static final double USER_VARIABLE_VALUE = 5d;
+	private static final double USER_VARIABLE_1_VALUE_TYPE_DOUBLE = 5d;
 	private static final String PROJECT_USER_VARIABLE = "projectUserVariable";
-	private static final double USER_VARIABLE_VALUE2 = 3.141592d;
+	private static final double USER_VARIABLE_2_VALUE_TYPE_DOUBLE = 3.141592d;
 	private static final String SPRITE_USER_VARIABLE = "spriteUserVariable";
 	private static final double USER_VARIABLE_RESET = 0.0d;
+	private static final String USER_VARIABLE_3_VALUE_TYPE_STRING = "My Little User Variable";
+	private static final String PROJECT_USER_VARIABLE_2 = "projectUserVariable2";
 	private Sprite testSprite;
 	private Project project;
 	private Sprite firstSprite;
@@ -67,32 +69,42 @@ public class UserVariablesInterpretationTest extends AndroidTestCase {
 
 		UserVariablesContainer userVariableContainer = ProjectManager.getInstance().getCurrentProject()
 				.getUserVariables();
-		userVariableContainer.addProjectUserVariable(PROJECT_USER_VARIABLE).setValue(USER_VARIABLE_VALUE);
+		userVariableContainer.addProjectUserVariable(PROJECT_USER_VARIABLE).setValue(USER_VARIABLE_1_VALUE_TYPE_DOUBLE);
 		userVariableContainer.addSpriteUserVariableToSprite(firstSprite, SPRITE_USER_VARIABLE).setValue(
-				USER_VARIABLE_VALUE2);
+				USER_VARIABLE_2_VALUE_TYPE_DOUBLE);
+		userVariableContainer.addProjectUserVariable(PROJECT_USER_VARIABLE_2).setValue(
+				USER_VARIABLE_3_VALUE_TYPE_STRING);
 	}
 
 	public void testUserVariableInterpretation() {
 		Formula userVariable = getUservariableByName(PROJECT_USER_VARIABLE);
-		assertEquals("Formula interpretation of ProjectUserVariable is not as expected", USER_VARIABLE_VALUE,
-				userVariable.interpretDouble(testSprite));
+		assertEquals("Formula interpretation of ProjectUserVariable is not as expected",
+				USER_VARIABLE_1_VALUE_TYPE_DOUBLE, userVariable.interpretDouble(testSprite));
 
 		userVariable = getUservariableByName(SPRITE_USER_VARIABLE);
-		assertEquals("Formula interpretation of SpriteUserVariable is not as expected", USER_VARIABLE_VALUE2,
-				userVariable.interpretDouble(firstSprite));
+		assertEquals("Formula interpretation of SpriteUserVariable is not as expected",
+				USER_VARIABLE_2_VALUE_TYPE_DOUBLE, userVariable.interpretDouble(firstSprite));
+
+		userVariable = getUservariableByName(PROJECT_USER_VARIABLE_2);
+		assertEquals("Formula interpretation of ProjectUserVariable2 is not as expected",
+				USER_VARIABLE_3_VALUE_TYPE_STRING, userVariable.interpretString(firstSprite));
 	}
 
 	public void testUserVariableReseting() {
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
 		Formula userVariable = getUservariableByName(PROJECT_USER_VARIABLE);
-		assertEquals("ProjectUserVariable didnt reset", USER_VARIABLE_RESET, userVariable.interpretDouble(testSprite));
+		assertEquals("ProjectUserVariable did not reset", USER_VARIABLE_RESET, userVariable.interpretDouble(testSprite));
 
 		userVariable = getUservariableByName(SPRITE_USER_VARIABLE);
-		assertEquals("SpriteUserVariable didnt reset", USER_VARIABLE_RESET, userVariable.interpretDouble(firstSprite));
+		assertEquals("SpriteUserVariable did not reset", USER_VARIABLE_RESET, userVariable.interpretDouble(firstSprite));
+
+		userVariable = getUservariableByName(PROJECT_USER_VARIABLE_2);
+		assertEquals("ProjectUserVariable2 did not reset", USER_VARIABLE_RESET,
+				userVariable.interpretDouble(firstSprite));
+
 	}
 
 	public void testNotExistingUservariable() {
-
 		List<InternToken> internTokenList = new LinkedList<InternToken>();
 		internTokenList.add(new InternToken(InternTokenType.USER_VARIABLE, "NOT_EXISTING_USER_VARIABLE"));
 		InternFormulaParser internParser = new InternFormulaParser(internTokenList);
@@ -101,7 +113,6 @@ public class UserVariablesInterpretationTest extends AndroidTestCase {
 		assertNull("Invalid user variable parsed:   NOT_EXISTING_USER_VARIABLE)", parseTree);
 		int errorTokenIndex = internParser.getErrorTokenIndex();
 		assertEquals("Error Token Index is not as expected", 0, errorTokenIndex);
-
 	}
 
 	private Formula getUservariableByName(String userVariableName) {

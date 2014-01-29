@@ -31,6 +31,10 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.io.SoundManager;
 
 public class ChangeVolumeByNActionTest extends InstrumentationTestCase {
+
+	private static final float INITIALIZED_VALUE = 70f;
+	private static final float CHANGE_VALUE = 12.3f;
+	private static final String NOT_NUMERICAL_STRING = "volume";
 	private final float louderValue = 10.6f;
 	private final float softerValue = -20.3f;
 
@@ -53,5 +57,19 @@ public class ChangeVolumeByNActionTest extends InstrumentationTestCase {
 		changeVolumeByAction.act(1.0f);
 		assertEquals("Incorrect sprite size value after ChangeVolumeByNBrick executed", expectedVolume, SoundManager
 				.getInstance().getVolume());
+	}
+
+	public void testStringFormula() {
+		Sprite sprite = new Sprite("testSprite");
+		ChangeVolumeByNAction action = ExtendedActions.changeVolumeByN(sprite,
+				new Formula(String.valueOf(CHANGE_VALUE)));
+		action.act(1.0f);
+		assertEquals("Incorrect sprite volume after ChangeVolumeByNBrick executed", INITIALIZED_VALUE + CHANGE_VALUE,
+				SoundManager.getInstance().getVolume());
+
+		action = ExtendedActions.changeVolumeByN(sprite, new Formula(NOT_NUMERICAL_STRING));
+		action.act(1.0f);
+		assertEquals("Incorrect sprite volume after ChangeVolumeByNBrick executed", INITIALIZED_VALUE + CHANGE_VALUE,
+				SoundManager.getInstance().getVolume());
 	}
 }

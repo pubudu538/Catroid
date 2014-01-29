@@ -39,15 +39,19 @@ public class ChangeVariableAction extends Action {
 		if (userVariable == null) {
 			return true;
 		}
-		double originalValue = userVariable.getValue();
-		double value;
-		try {
-			value = changeVariable.interpretDouble(sprite);
-		} catch (ClassCastException classCastException) {
-			value = 0;
+
+		Object originalValue = userVariable.getValue();
+		Object value = changeVariable.interpretObject(sprite);
+
+		if (originalValue instanceof String || value instanceof String) {
+			return true;
 		}
-		userVariable.setValue(originalValue + value);
-		return true;
+
+		if (originalValue instanceof Double && value instanceof Double) {
+			userVariable.setValue(((Double) originalValue) + ((Double) value));
+			return true;
+		}
+		return false;
 	}
 
 	public void setUserVariable(UserVariable userVariable) {

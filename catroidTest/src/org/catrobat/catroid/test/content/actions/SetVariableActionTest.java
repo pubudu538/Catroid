@@ -38,7 +38,9 @@ import org.catrobat.catroid.formulaeditor.UserVariable;
 public class SetVariableActionTest extends AndroidTestCase {
 
 	private static final String TEST_USERVARIABLE = "testUservariable";
-	private static final int SET_VARIABLE_VALUE = 17;
+	private static final double SET_VARIABLE_VALUE = 17;
+	private static final double INITIALIZED_VALUE = 0.0;
+
 	private Sprite testSprite;
 	private StartScript testScript;
 	private Project project;
@@ -56,8 +58,7 @@ public class SetVariableActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
 	}
 
-	public void testSetVariable() throws InterruptedException {
-
+	public void testSetVariableWithNumericalFormula() {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
@@ -70,15 +71,12 @@ public class SetVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("Variable not changed", SET_VARIABLE_VALUE, userVariable.getValue().intValue());
+		assertEquals("Variable not changed", SET_VARIABLE_VALUE, userVariable.getValue());
 	}
 
-	public void testSetVariableWithInvalidUserVariable() throws InterruptedException {
+	public void testSetVariableWithInvalidUserVariable() {
 
-		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.getUserVariable(TEST_USERVARIABLE, null);
-
-		ChangeVariableBrick changeBrick = new ChangeVariableBrick(testSprite, new Formula(SET_VARIABLE_VALUE));
+		ChangeVariableBrick changeBrick = new ChangeVariableBrick(testSprite, SET_VARIABLE_VALUE);
 		testScript.addBrick(changeBrick);
 		testSprite.addScript(testScript);
 		project.addSprite(testSprite);
@@ -86,13 +84,12 @@ public class SetVariableActionTest extends AndroidTestCase {
 		testSprite.createStartScriptActionSequence();
 		testSprite.look.act(1f);
 
-		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("Variable changed, but should not!", 0, userVariable.getValue().intValue());
+		assertEquals("Variable changed, but should not!", INITIALIZED_VALUE, userVariable.getValue());
 	}
 
-	public void testSetVariableWithString() {
-
+	public void testSetVariableWithNumericalStringFormula() {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
@@ -108,12 +105,10 @@ public class SetVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("String UserVariable not changed!", Integer.valueOf(myString).intValue(), userVariable.getValue()
-				.intValue());
+		assertEquals("String UserVariable not changed!", Double.valueOf(myString), userVariable.getValue());
 	}
 
-	public void testSetVariableWithInvalidString() {
-
+	public void testSetVariableWithStringFormula() {
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
 
@@ -129,6 +124,6 @@ public class SetVariableActionTest extends AndroidTestCase {
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
-		assertEquals("String UserVariable not changed!", 0, userVariable.getValue().intValue());
+		assertEquals("String UserVariable not changed!", myString, (String) userVariable.getValue());
 	}
 }
