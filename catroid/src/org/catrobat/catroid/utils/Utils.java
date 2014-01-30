@@ -65,6 +65,8 @@ import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 
@@ -501,4 +503,20 @@ public final class Utils {
 		}
 	}
 
+	public static void update(Formula formula, Sprite sprite, String methodName) {
+		Float formulaInterpretation;
+		try {
+			formulaInterpretation = formula == null ? 0 : formula.interpretFloat(sprite);
+			if (formulaInterpretation.isNaN()) {
+				return;
+			}
+		} catch (Exception exception) {
+			return;
+		}
+		try {
+			sprite.look.getClass().getMethod(methodName, float.class).invoke(sprite.look, formulaInterpretation);
+		} catch (Exception exception) {
+			return;
+		}
+	}
 }

@@ -88,4 +88,18 @@ public class PointInDirectionActionTest extends AndroidTestCase {
 		assertEquals("Wrong direction", (float) Direction.RIGHT.getDegrees(),
 				sprite.look.getDirectionInUserInterfaceDimensionUnit());
 	}
+
+	public void testNullFormula() {
+		Sprite sprite = new Sprite("test");
+		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite, null);
+		action.act(1.0f);
+		assertEquals("Wrong direction", 0f, sprite.look.getDirectionInUserInterfaceDimensionUnit());
+	}
+
+	public void testNotANumberFormula() {
+		Sprite sprite = new Sprite("test");
+		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite, new Formula(Double.NaN));
+		action.act(1.0f);
+		assertEquals("Wrong direction", 90f, sprite.look.getDirectionInUserInterfaceDimensionUnit());
+	}
 }

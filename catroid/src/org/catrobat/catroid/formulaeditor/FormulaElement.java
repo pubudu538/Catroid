@@ -489,7 +489,7 @@ public class FormulaElement implements Serializable {
 		return returnValue;
 	}
 
-	private Object interpretString(String value) {
+	private Object interpretString(String value) throws NumberFormatException {
 
 		if (parent == null && type != ElementType.USER_VARIABLE) {
 			Double anotherValue;
@@ -599,9 +599,6 @@ public class FormulaElement implements Serializable {
 		if (((Double) valueToCheck).doubleValue() == Double.POSITIVE_INFINITY) {
 			return Double.MAX_VALUE;
 		}
-		//		if (((Double) valueToCheck).isNaN()) {
-		//			throw new NumberFormatException(String.valueOf(Double.NaN));
-		//		}
 
 		return valueToCheck;
 	}

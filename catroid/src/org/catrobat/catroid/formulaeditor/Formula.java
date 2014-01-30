@@ -97,20 +97,26 @@ public class Formula implements Serializable {
 	}
 
 	public Boolean interpretBoolean(Sprite sprite) {
-		int result = interpretInteger(sprite);
+		int result = interpretDouble(sprite).intValue();
 		return result != 0 ? true : false;
 	}
 
 	public Integer interpretInteger(Sprite sprite) {
-		return ((Double) formulaTree.interpretRecursive(sprite)).intValue();
+		Double returnValue = interpretDouble(sprite);
+		return returnValue.intValue();
 	}
 
 	public Double interpretDouble(Sprite sprite) {
-		return (Double) formulaTree.interpretRecursive(sprite);
+		Double returnValue = (Double) formulaTree.interpretRecursive(sprite);
+		//		if (returnValue.isNaN()) {
+		//			throw new NumberFormatException(String.valueOf(Double.NaN));
+		//		}
+		return returnValue;
 	}
 
 	public Float interpretFloat(Sprite sprite) {
-		return ((Double) formulaTree.interpretRecursive(sprite)).floatValue();
+		Double returnValue = interpretDouble(sprite);
+		return returnValue.floatValue();
 	}
 
 	public String interpretString(Sprite sprite) {
