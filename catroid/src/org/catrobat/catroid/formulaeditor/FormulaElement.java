@@ -263,38 +263,32 @@ public class FormulaElement implements Serializable {
 	}
 
 	private Object interpretFunctionJOIN(Object right, Object left, Sprite sprite) {
-		String firstPart = "";
-		if (leftChild != null) {
-			if (leftChild.getElementType() == ElementType.NUMBER) {
-				Double number = ((Double) leftChild.interpretRecursive(sprite));
-				if (isInteger(number)) {
-					firstPart += number.intValue();
-				} else {
-					firstPart += number;
-				}
-			} else if (leftChild.getElementType() == ElementType.STRING) {
-				firstPart = leftChild.value;
-			} else if (leftChild.getElementType() != ElementType.STRING) {
-				firstPart += leftChild.interpretRecursive(sprite);
-			}
-		}
+		return interpretinterpretFunctionJOINParameter(leftChild, right, left, sprite)
+				+ interpretinterpretFunctionJOINParameter(rightChild, right, left, sprite);
+	}
 
-		String secondPart = "";
-		if (rightChild != null) {
-			if (rightChild.getElementType() == ElementType.NUMBER) {
-				Double number = ((Double) rightChild.interpretRecursive(sprite));
-				if (isInteger(number)) {
-					secondPart += number.intValue();
+	private String interpretinterpretFunctionJOINParameter(FormulaElement child, Object right, Object left,
+			Sprite sprite) {
+		String parameterInterpretation = "";
+		if (child != null) {
+			if (child.getElementType() == ElementType.NUMBER) {
+				Double number = ((Double) child.interpretRecursive(sprite));
+				if (number.isNaN()) {
+					parameterInterpretation = "";
 				} else {
-					secondPart += number;
+					if (isInteger(number)) {
+						parameterInterpretation += number.intValue();
+					} else {
+						parameterInterpretation += number;
+					}
 				}
-			} else if (rightChild.getElementType() == ElementType.STRING) {
-				secondPart = rightChild.value;
-			} else if (rightChild.getElementType() != ElementType.STRING) {
-				secondPart += rightChild.interpretRecursive(sprite);
+			} else if (child.getElementType() == ElementType.STRING) {
+				parameterInterpretation = child.value;
+			} else if (child.getElementType() != ElementType.STRING) {
+				parameterInterpretation += child.interpretRecursive(sprite);
 			}
 		}
-		return firstPart + secondPart;
+		return parameterInterpretation;
 	}
 
 	private Object interpretFunctionLENGTH(Object left, Sprite sprite) {
@@ -309,6 +303,9 @@ public class FormulaElement implements Serializable {
 		}
 		if (leftChild.type == ElementType.USER_VARIABLE) {
 			return (double) handleLengthUserVariableParameter(sprite);
+		}
+		if (left instanceof Double && ((Double) left).isNaN()) {
+			return 0d;
 		}
 		return (double) (String.valueOf(left)).length();
 	}

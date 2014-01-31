@@ -108,9 +108,6 @@ public class Formula implements Serializable {
 
 	public Double interpretDouble(Sprite sprite) {
 		Double returnValue = (Double) formulaTree.interpretRecursive(sprite);
-		//		if (returnValue.isNaN()) {
-		//			throw new NumberFormatException(String.valueOf(Double.NaN));
-		//		}
 		return returnValue;
 	}
 
