@@ -31,7 +31,6 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.BroadcastEvent;
 import org.catrobat.catroid.content.BroadcastEvent.BroadcastType;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
@@ -276,8 +275,9 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	public static SpeakAction speak(String text, SpeakBrick speakBrick) {
+	public static SpeakAction speak(Formula text, Sprite sprite) {
 		SpeakAction action = action(SpeakAction.class);
+		action.setSprite(sprite);
 		action.setText(text);
 		return action;
 	}
