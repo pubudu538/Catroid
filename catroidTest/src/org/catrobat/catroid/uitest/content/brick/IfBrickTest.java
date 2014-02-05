@@ -187,7 +187,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	}
 
 	public void testCopyIfLogicBeginBrickActionMode() {
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(1);
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
@@ -203,7 +203,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	}
 
 	public void testCopyIfLogicElseBrickActionMode() {
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(3);
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
@@ -219,7 +219,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	}
 
 	public void testCopyIfLogicEndBrickActionMode() {
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(4);
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
@@ -235,12 +235,12 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	}
 
 	public void testSelectionAfterCopyActionMode() {
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(1);
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		solo.clickOnCheckBox(6);
 
 		CheckBox firstIfLogicBeginBrickCheckBox = (CheckBox) solo.getView(R.id.brick_if_begin_checkbox, 0);
@@ -261,7 +261,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	}
 
 	public void testSelectionActionMode() {
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(1);
 
 		CheckBox ifLogicBeginBrickCheckbox = (CheckBox) solo.getView(R.id.brick_if_begin_checkbox);
@@ -275,7 +275,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		solo.clickOnCheckBox(1);
 
 		ifLogicBeginBrickCheckbox = (CheckBox) solo.getView(R.id.brick_if_begin_checkbox);

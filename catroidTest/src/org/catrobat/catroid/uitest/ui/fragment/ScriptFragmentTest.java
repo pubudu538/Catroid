@@ -80,7 +80,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		List<Brick> brickList = UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -103,7 +103,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -125,7 +125,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -152,7 +152,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		solo.clickOnCheckBox(0);
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
@@ -162,7 +162,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		solo.clickOnText(solo.getString(R.string.brick_when_started));
 		solo.sleep(100);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(1);
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
@@ -202,7 +202,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		solo.clickOnText(solo.getString(R.string.select_all).toUpperCase(Locale.getDefault()));
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
@@ -212,7 +212,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.dragFloatingBrickDownwards(solo, 0);
 		solo.sleep(100);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(1);
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
@@ -222,7 +222,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 
 		assertEquals("No brick has been copied!", 2, numberOfBricks);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		solo.clickOnCheckBox(2);
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
@@ -378,7 +378,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -406,7 +406,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -433,7 +433,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -453,7 +453,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		List<Brick> brickList = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getScript(0)
 				.getBrickList();
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -478,7 +478,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProjectForActionModeDelete();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -505,7 +505,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProjectNestedLoops();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -559,7 +559,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.createTestProjectIfBricks();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 
 		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
 
@@ -654,7 +654,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		assertEquals("Empty View shown although there are items in the list!", View.GONE,
 				solo.getView(android.R.id.empty).getVisibility());
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		solo.clickOnCheckBox(0);
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
@@ -815,7 +815,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 		String selectAll = solo.getString(R.string.select_all).toUpperCase(Locale.getDefault());
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
 
 		solo.clickOnText(selectAll);
@@ -832,7 +832,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 
 		solo.goBack();
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
 
 		solo.clickOnText(selectAll);

@@ -101,7 +101,7 @@ public class SpritesListFragmentTest extends BaseActivityInstrumentationTestCase
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		String selectAll = solo.getString(R.string.select_all).toUpperCase(Locale.getDefault());
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy);
 		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
 
 		solo.clickOnText(selectAll);
@@ -115,7 +115,7 @@ public class SpritesListFragmentTest extends BaseActivityInstrumentationTestCase
 
 		solo.goBack();
 
-		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete);
 		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
 
 		solo.clickOnText(selectAll);

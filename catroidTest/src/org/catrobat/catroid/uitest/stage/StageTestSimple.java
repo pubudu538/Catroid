@@ -52,13 +52,13 @@ public class StageTestSimple extends BaseActivityInstrumentationTestCase<MainMen
 	public void testSimple() {
 		byte[] whitePixel = { (byte) 255, (byte) 255, (byte) 255, (byte) 255 };
 
-		byte[] result = StageActivity.stageListener.getPixels(0, 0, 1, 1);
+		byte[] result = UiTestUtils.getStagePixels(0, 0, 1, 1);
 		UiTestUtils.compareByteArrays(whitePixel, result);
 
-		result = StageActivity.stageListener.getPixels(19, 19, 1, 1);
+		result = UiTestUtils.getStagePixels(19, 19, 1, 1);
 		UiTestUtils.compareByteArrays(whitePixel, result);
 
-		result = StageActivity.stageListener.getPixels(-1, -1, 1, 1);
+		result = UiTestUtils.getStagePixels(-1, -1, 1, 1);
 		UiTestUtils.compareByteArrays(whitePixel, result);
 	}
 

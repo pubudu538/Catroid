@@ -77,7 +77,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 	public void testShowTexture() {
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1400);
-		byte[] screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		byte[] screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		UiTestUtils.comparePixelArrayWithPixelScreenArrayWithTolerance(WHITE_PIXEL, screenArray, 0, 0, SCREEN_WIDTH,
 				SCREEN_HEIGHT, 0);
@@ -106,7 +106,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 
 		solo.clickOnScreen((SCREEN_WIDTH / 2) + 21, (SCREEN_HEIGHT / 2) - 21);
 		solo.sleep(300);
-		screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLUE_PIXEL, screenArray, 21, 21, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLUE_PIXEL, screenArray, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLUE_PIXEL, screenArray, 21 - 40, 21 - 40, SCREEN_WIDTH,
@@ -116,7 +116,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 
 		solo.clickOnScreen((SCREEN_WIDTH / 2) - 21, (SCREEN_HEIGHT / 2) - 21);
 		solo.sleep(300);
-		screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(WHITE_PIXEL, screenArray, -31, 21, SCREEN_WIDTH,
 				SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLUE_PIXEL, screenArray, 21, 21, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -127,7 +127,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 
 		solo.clickOnScreen((SCREEN_WIDTH / 2) + 21, (SCREEN_HEIGHT / 2) + 21);
 		solo.sleep(300);
-		screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(GREEN_PIXEL, screenArray, 1, -2, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils
 				.comparePixelArrayWithPixelScreenArray(GREEN_PIXEL, screenArray, 40, -2, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -138,7 +138,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 
 		solo.clickOnScreen((SCREEN_WIDTH / 2) - 21, (SCREEN_HEIGHT / 2) + 21);
 		solo.sleep(300);
-		screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(RED_BRIGHTNESS_PIXEL, screenArray, -21, -21, SCREEN_WIDTH,
 				SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(RED_BRIGHTNESS_PIXEL, screenArray, -21, -21 + 27,
@@ -154,7 +154,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 
 		solo.clickOnScreen((SCREEN_WIDTH / 2) - 50, (SCREEN_HEIGHT / 2) - 50);
 		solo.sleep(300);
-		screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLACK_BRIGHTNESS_PIXEL, screenArray, -54, 55, SCREEN_WIDTH,
 				SCREEN_HEIGHT);
 
@@ -176,7 +176,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1400);
 
-		byte[] screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+		byte[] screenArray = UiTestUtils.getStagePixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLUE_PIXEL, screenArray, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 		UiTestUtils.comparePixelArrayWithPixelScreenArray(BLUE_PIXEL, screenArray, -19, -19, SCREEN_WIDTH,
 				SCREEN_HEIGHT);

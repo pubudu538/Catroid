@@ -451,7 +451,8 @@ public class StageListener implements ApplicationListener {
 		return true;
 	}
 
-	public byte[] getPixels(int x, int y, int width, int height) {
+	@SuppressWarnings("unused")
+	private byte[] getPixels(int x, int y, int width, int height) {
 		testX = x;
 		testY = y;
 		testWidth = width;

@@ -67,7 +67,7 @@ public class TouchAxisTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		solo.sleep(500);
 
 		byte[] blackPixel = { (byte) 0, (byte) 0, (byte) 0, (byte) 255 };
-		byte[] screenPixel = StageActivity.stageListener.getPixels(ScreenValues.SCREEN_WIDTH / 2, 100, 1, 1);
+		byte[] screenPixel = UiTestUtils.getStagePixels(ScreenValues.SCREEN_WIDTH / 2, 100, 1, 1);
 
 		assertTrue("Pixels didn't match! Touch area is off!", Arrays.equals(blackPixel, screenPixel));
 	}

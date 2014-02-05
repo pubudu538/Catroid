@@ -128,6 +128,7 @@ import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.InternToken;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
@@ -213,24 +214,20 @@ public final class UiTestUtils {
 	/**
 	 * Clicks on the EditText given by editTextId, inserts the integer value and closes the Dialog
 	 * 
-	 * @param editTextId
-	 *            The ID of the EditText to click on
 	 * @param value
 	 *            The value you want to put into the EditText
 	 */
-	public static void insertIntegerIntoEditText(Solo solo, int value) {
+	public static void insertIntegerIntoFormulaEditor(Solo solo, int value) {
 		insertValue(solo, value + "");
 	}
 
 	/**
 	 * Clicks on the EditText given by editTextId, inserts the double value and closes the Dialog
 	 * 
-	 * @param editTextId
-	 *            The ID of the EditText to click on
 	 * @param value
 	 *            The value you want to put into the EditText
 	 */
-	public static void insertDoubleIntoEditText(Solo solo, double value) {
+	public static void insertDoubleIntoFormulaEditor(Solo solo, double value) {
 		insertValue(solo, value + "");
 	}
 
@@ -287,7 +284,7 @@ public final class UiTestUtils {
 
 		solo.clickOnView(solo.getView(editTextId));
 
-		insertDoubleIntoEditText(solo, newValue);
+		insertDoubleIntoFormulaEditor(solo, newValue);
 
 		assertEquals(
 				"Text not updated within FormulaEditor",
@@ -308,7 +305,7 @@ public final class UiTestUtils {
 	public static void insertValueViaFormulaEditor(Solo solo, int editTextId, double value) {
 
 		solo.clickOnView(solo.getView(editTextId));
-		UiTestUtils.insertDoubleIntoEditText(solo, value);
+		UiTestUtils.insertDoubleIntoFormulaEditor(solo, value);
 
 		assertEquals(
 				"Text not updated within FormulaEditor",
@@ -1101,15 +1098,14 @@ public final class UiTestUtils {
 	 * This method can be used in 2 ways. Either to click on an action item
 	 * (icon), or to click on an item in the overflow menu. So either pass a
 	 * String + ID --OR-- a String + 0.
-	 * 
+	 *
 	 * @param solo
 	 *            Use Robotium functionality
 	 * @param overflowMenuItemName
 	 *            Name of the overflow menu item
-	 * @param overflowMenuItemId
-	 *            ID of an action item (icon)
+	 * @param menuItemId
 	 */
-	public static void openActionMode(Solo solo, String overflowMenuItemName, int menuItemId, Activity activity) {
+	public static void openActionMode(Solo solo, String overflowMenuItemName, int menuItemId) {
 
 		if (overflowMenuItemName != null && menuItemId != 0) {
 			ArrayList<View> views = solo.getCurrentViews();
@@ -1191,6 +1187,11 @@ public final class UiTestUtils {
 	}
 
 	// Stage methods
+	public static byte[] getStagePixels(int x, int y, int width, int height) {
+		Reflection.ParameterList parameters = new Reflection.ParameterList(x, y, width, height);
+		return (byte[]) Reflection.invokeMethod(StageListener.class, StageActivity.stageListener, "getPixels", parameters);
+	}
+
 	public static void compareByteArrays(byte[] firstArray, byte[] secondArray) {
 		assertEquals("Length of byte arrays not equal", firstArray.length, secondArray.length);
 		assertEquals("Arrays don't have same content.", firstArray[0], secondArray[0], 10);
@@ -1596,7 +1597,7 @@ public final class UiTestUtils {
 		solo.waitForText(buttonText);
 		solo.goBack();
 
-		openActionMode(solo, buttonText, buttonId, activity);
+		openActionMode(solo, buttonText, buttonId);
 		ArrayList<CheckBox> checkBoxList = solo.getCurrentViews(CheckBox.class);
 		for (CheckBox checkBox : checkBoxList) {
 			if (checkBox.isChecked()) {
