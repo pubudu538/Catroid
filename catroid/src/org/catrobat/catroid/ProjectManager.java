@@ -32,6 +32,7 @@ import android.util.Log;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.FileChecksumContainer;
 import org.catrobat.catroid.common.MessageContainer;
+import org.catrobat.catroid.common.ScreenModes;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
@@ -131,6 +132,10 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 			if (project.getCatrobatLanguageVersion() == 0.9f) {
 				project.setCatrobatLanguageVersion(0.91f);
 				//no convertion needed - only change to white background
+			}
+			if (project.getCatrobatLanguageVersion() == 0.91f) {
+				project.setCatrobatLanguageVersion(0.92f);
+				project.setScreenMode(ScreenModes.STRETCH);
 			}
 			//insert further convertions here
 
