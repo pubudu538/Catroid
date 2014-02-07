@@ -1,7 +1,8 @@
 package org.catrobat.catroid.uitest.content.brick.physic;
 
 import android.widget.ListView;
-import android.widget.Spinner;
+
+import com.badlogic.gdx.math.Vector2;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -10,8 +11,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.physic.PhysicsObject.Type;
-import org.catrobat.catroid.physic.content.bricks.SetPhysicsObjectTypeBrick;
+import org.catrobat.catroid.physic.content.bricks.SetVelocityBrick;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -19,12 +19,15 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.util.ArrayList;
 
-public class SetPhysicsObjectTypeBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
+public class SetVelocityBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
+
+	private static final int SET_VELOCITY_X = 33;
+	private static final int SET_VELOCITY_Y = 66;
 
 	private Project project;
-	private SetPhysicsObjectTypeBrick setPhysicsObjectTypeBrick;
+	private SetVelocityBrick setVelocityBrick;
 
-	public SetPhysicsObjectTypeBrickTest() {
+	public SetVelocityBrickTest() {
 		super(ScriptActivity.class);
 	}
 
@@ -37,7 +40,7 @@ public class SetPhysicsObjectTypeBrickTest extends BaseActivityInstrumentationTe
 		super.setUp();
 	}
 
-	public void testPhysicsObjectTypeBrick() {
+	public void testSetVelocityBrick() {
 		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
 		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
 
@@ -51,24 +54,23 @@ public class SetPhysicsObjectTypeBrickTest extends BaseActivityInstrumentationTe
 		assertEquals("Incorrect number of bricks.", 1, projectBrickList.size());
 
 		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
-		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_physics_object_type)));
+		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_velocity_to)));
+		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_velocity_unit)));
 
-		String[] typeArray = solo.getCurrentActivity().getResources().getStringArray(R.array.physics_object_types);
-		for (int i = 0; i < typeArray.length; i++) {
-			solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.brick_set_physics_object_type_spinner));
-			solo.clickInList(i + 1);
-			assertTrue("Correct item in Spinner not shown", solo.waitForText(typeArray[i]));
-			assertEquals("Wrong physics type", typeArray[i],
-					((Spinner) solo.getView(R.id.brick_set_physics_object_type_spinner)).getSelectedItem().toString());
-		}
+		UiTestUtils.testBrickWithFormulaEditor(solo, R.id.brick_set_velocity_edit_text_x, SET_VELOCITY_X, "velocityX",
+				setVelocityBrick);
+
+		UiTestUtils.testBrickWithFormulaEditor(solo, R.id.brick_set_velocity_edit_text_y, SET_VELOCITY_Y, "velocityY",
+				setVelocityBrick);
 	}
 
 	private void createProject() {
 		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
-		setPhysicsObjectTypeBrick = new SetPhysicsObjectTypeBrick(sprite, Type.DYNAMIC);
-		script.addBrick(setPhysicsObjectTypeBrick);
+		Vector2 initVector = new Vector2(0, 0);
+		setVelocityBrick = new SetVelocityBrick(sprite, initVector);
+		script.addBrick(setVelocityBrick);
 
 		sprite.addScript(script);
 		project.addSprite(sprite);
