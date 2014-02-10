@@ -53,7 +53,7 @@ public class DroneTakeOffBrickNxtCp extends BrickBaseType implements OnItemSelec
 
 	@Override
 	public int getRequiredResources() {
-		return BLUETOOTH_LEGO_NXT;
+		return ARDRONE_SUPPORT;
 	}
 
 	@Override

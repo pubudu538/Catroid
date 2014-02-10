@@ -26,16 +26,21 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.parrot.freeflight.service.DroneControlService;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -67,6 +72,7 @@ public class PreStageActivity extends Activity {
 	private ProgressDialog connectingProgressDialog;
 	private static TextToSpeech textToSpeech;
 	private static OnUtteranceCompletedListenerContainer onUtteranceCompletedListenerContainer;
+	private DroneControlService droneControlService = null;
 
 	private boolean autoConnect = false;
 
@@ -101,6 +107,11 @@ public class PreStageActivity extends Activity {
 
 			}
 		}
+		if ((requiredResources & Brick.ARDRONE_SUPPORT) > 0) {
+			//start Drone Service
+
+		}
+
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
 			startStage();
 		}
@@ -309,4 +320,23 @@ public class PreStageActivity extends Activity {
 			}
 		}
 	};
+
+	private void onDroneServiceConnected() {
+
+	}
+
+	private ServiceConnection droneServiceConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			droneControlService = ((DroneControlService.LocalBinder) service).getService();
+			onDroneServiceConnected();
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			droneControlService = null;
+		}
+	};
+
 }
