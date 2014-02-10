@@ -574,7 +574,11 @@ public class FormulaElement implements Serializable {
 
 	private Double interpretOperator(Object object) {
 		if (object instanceof String) {
-			return Double.valueOf((String) object);
+			try {
+				return Double.valueOf((String) object);
+			} catch (NumberFormatException numberFormatException) {
+				return Double.NaN;
+			}
 		} else {
 			return (Double) object;
 		}
