@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -59,7 +60,10 @@ import java.util.HashMap;
 import java.util.Locale;
 
 @SuppressWarnings("deprecation")
-public class PreStageActivity extends Activity {
+public class PreStageActivity extends Activity
+//implements DroneReadyReceiverDelegate, DroneFlyingStateReceiverDelegate,
+//		DroneConnectionChangeReceiverDelegate 
+{
 	private static final String TAG = PreStageActivity.class.getSimpleName();
 
 	private static final int REQUEST_ENABLE_BLUETOOTH = 2000;
@@ -72,7 +76,11 @@ public class PreStageActivity extends Activity {
 	private ProgressDialog connectingProgressDialog;
 	private static TextToSpeech textToSpeech;
 	private static OnUtteranceCompletedListenerContainer onUtteranceCompletedListenerContainer;
+
 	private DroneControlService droneControlService = null;
+	//	private BroadcastReceiver droneReadyReceiver;
+	//	private BroadcastReceiver droneConnectionChangeReceiver;
+	//	private DroneFlyingStateReceiver droneFlyingStateReceiver;
 
 	private boolean autoConnect = false;
 
@@ -108,8 +116,8 @@ public class PreStageActivity extends Activity {
 			}
 		}
 		if ((requiredResources & Brick.ARDRONE_SUPPORT) > 0) {
-			//start Drone Service
-
+			bindService(new Intent(this, DroneControlService.class), this.droneServiceConnection,
+					Context.BIND_AUTO_CREATE);
 		}
 
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
@@ -123,6 +131,32 @@ public class PreStageActivity extends Activity {
 		if (requiredResourceCounter == 0) {
 			finish();
 		}
+		//		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getApplicationContext());
+		//		manager.registerReceiver(droneReadyReceiver, new IntentFilter(DroneControlService.DRONE_STATE_READY_ACTION));
+		//		manager.registerReceiver(droneConnectionChangeReceiver, new IntentFilter(
+		//				DroneControlService.DRONE_CONNECTION_CHANGED_ACTION));
+
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		if (droneControlService != null) {
+			droneControlService.pause();
+		}
+
+		//		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getApplicationContext());
+		//		manager.unregisterReceiver(droneReadyReceiver);
+		//		manager.unregisterReceiver(droneConnectionChangeReceiver);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		unbindService(this.droneServiceConnection);
+		Log.d(TAG, "PrestageActivity destroyed");
 	}
 
 	//all resources that should be reinitialized with every stage start
@@ -164,6 +198,7 @@ public class PreStageActivity extends Activity {
 
 		requiredResourceCounter--;
 		if (requiredResourceCounter == 0) {
+			Log.d(TAG, "Start Stage");
 			startStage();
 		}
 	}
@@ -322,7 +357,8 @@ public class PreStageActivity extends Activity {
 	};
 
 	private void onDroneServiceConnected() {
-
+		Log.d(TAG, "onDroneServiceConnected");
+		resourceInitialized();
 	}
 
 	private ServiceConnection droneServiceConnection = new ServiceConnection() {
@@ -338,5 +374,28 @@ public class PreStageActivity extends Activity {
 			droneControlService = null;
 		}
 	};
+	//
+	//	@Override
+	//	public void onDroneConnected() {
+	//		resourceInitialized();
+	//	}
+	//
+	//	@Override
+	//	public void onDroneDisconnected() {
+	//		// TODO Auto-generated method stub
+	//
+	//	}
+	//
+	//	@Override
+	//	public void onDroneFlyingStateChanged(boolean flying) {
+	//		// TODO Auto-generated method stub
+	//
+	//	}
+	//
+	//	@Override
+	//	public void onDroneReady() {
+	//		// TODO Auto-generated method stub
+	//
+	//	}
 
 }

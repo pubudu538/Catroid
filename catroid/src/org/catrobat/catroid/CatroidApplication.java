@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/**
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -20,25 +19,46 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+ */
+package org.catrobat.catroid;
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="setting_mindstorm_bricks"
-        android:summary="@string/preference_description_mindstorm_bricks"
-        android:title="@string/preference_title_enable_mindstorm_bricks" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="setting_quadcopter_bricks"
-        android:summary="@string/preference_description_quadcopter_bricks"
-        android:title="@string/preference_title_enable_quadcopter_bricks" />
-    
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="setting_quadcopter_bricks_enabled"
-        android:summary="@string/preference_description_quadcopter_bricks"
-        android:title="@string/preference_title_enable_quadcopter_bricks"
-        android:enabled="false" />
+import android.app.Application;
+import android.util.Log;
 
-</PreferenceScreen>
+import com.parrot.freeflight.settings.ApplicationSettings;
+
+public class CatroidApplication extends Application {
+
+	private static final String TAG = "CatroidApplicatoin";
+
+	private ApplicationSettings settings;
+
+	static {
+		System.loadLibrary("avutil");
+		System.loadLibrary("swscale");
+		System.loadLibrary("avcodec");
+		System.loadLibrary("avfilter");
+		System.loadLibrary("avformat");
+		System.loadLibrary("avdevice");
+		System.loadLibrary("adfreeflight");
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Log.d(TAG, "OnCreate");
+
+		settings = new ApplicationSettings(this);
+	}
+
+	@Override
+	public void onTerminate() {
+		Log.d(TAG, "OnTerminate");
+		super.onTerminate();
+	}
+
+	public ApplicationSettings getAppSettings() {
+		return settings;
+	}
+
+}
