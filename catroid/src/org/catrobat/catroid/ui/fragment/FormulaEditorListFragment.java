@@ -79,6 +79,18 @@ public class FormulaEditorListFragment extends SherlockListFragment implements D
 			R.string.formula_editor_function_length, R.string.formula_editor_function_letter,
 			R.string.formula_editor_function_join };
 
+	private static final int[] MATH_PARAMETERS = { R.string.formula_editor_function_sin_parameter,
+			R.string.formula_editor_function_cos_parameter, R.string.formula_editor_function_tan_parameter,
+			R.string.formula_editor_function_ln_parameter, R.string.formula_editor_function_log_parameter,
+			R.string.formula_editor_function_pi_parameter, R.string.formula_editor_function_sqrt_parameter,
+			R.string.formula_editor_function_rand_parameter, R.string.formula_editor_function_abs_parameter,
+			R.string.formula_editor_function_round_parameter, R.string.formula_editor_function_mod_parameter,
+			R.string.formula_editor_function_arcsin_parameter, R.string.formula_editor_function_arccos_parameter,
+			R.string.formula_editor_function_arctan_parameter, R.string.formula_editor_function_exp_parameter,
+			R.string.formula_editor_function_max_parameter, R.string.formula_editor_function_min_parameter,
+			R.string.formula_editor_function_length_parameter, R.string.formula_editor_function_letter_parameter,
+			R.string.formula_editor_function_join_parameter };
+
 	private static final int[] SENSOR_ITEMS = { R.string.formula_editor_sensor_x_acceleration,
 			R.string.formula_editor_sensor_y_acceleration, R.string.formula_editor_sensor_z_acceleration,
 			R.string.formula_editor_sensor_compass_direction, R.string.formula_editor_sensor_x_inclination,
@@ -125,10 +137,10 @@ public class FormulaEditorListFragment extends SherlockListFragment implements D
 		}
 
 		items = new String[itemsIds.length];
-		int index = 0;
-		for (Integer item : itemsIds) {
-			items[index] = getString(item);
-			index++;
+
+		for (int index = 0; index < items.length; index++) {
+			items[index] = tag == MATH_TAG ? getString(itemsIds[index]) + getString(MATH_PARAMETERS[index])
+					: getString(itemsIds[index]);
 		}
 
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
