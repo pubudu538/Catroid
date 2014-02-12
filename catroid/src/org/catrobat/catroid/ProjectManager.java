@@ -109,7 +109,7 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 				project = Utils.findValidProject();
 				if (project == null) {
 					try {
-						project = StandardProjectHandler.createAndSaveStandardProject(context);
+						project = StandardProjectHandler.createAndSaveStandardProject(context); // BUG !!!
 						MessageContainer.clearBackup();
 					} catch (IOException ioException) {
 						if (errorMessage) {
@@ -143,7 +143,7 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 			if (project.getCatrobatLanguageVersion() == 0.91f) {
 				project.setCatrobatLanguageVersion(0.92f);
 				project.setScreenMode(ScreenModes.STRETCH);
-                checkNestingBrickReferences();
+				checkNestingBrickReferences();
 			}
 			//insert further convertions here
 
