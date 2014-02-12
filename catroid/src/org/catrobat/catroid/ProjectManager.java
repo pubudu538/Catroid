@@ -109,7 +109,7 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 				project = Utils.findValidProject();
 				if (project == null) {
 					try {
-						project = StandardProjectHandler.createAndSaveStandardProject(context); // BUG !!!
+						project = StandardProjectHandler.createAndSaveStandardProject(context);
 						MessageContainer.clearBackup();
 					} catch (IOException ioException) {
 						if (errorMessage) {

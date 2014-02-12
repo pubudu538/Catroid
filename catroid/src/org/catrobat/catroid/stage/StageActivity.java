@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.parrot.freeflight.service.DroneControlService;
@@ -58,7 +59,11 @@ public class StageActivity extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		bindService(new Intent(this, DroneControlService.class), this.droneServiceConnection, Context.BIND_AUTO_CREATE);
+		boolean isSuccessful = bindService(new Intent(this, DroneControlService.class), this.droneServiceConnection,
+				Context.BIND_AUTO_CREATE);
+		if (!isSuccessful) {
+			Toast.makeText(this, "Connection to the drone not successful", Toast.LENGTH_LONG).show();
+		}
 		stageListener = new StageListener();
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
@@ -81,6 +86,11 @@ public class StageActivity extends AndroidApplication {
 	@Override
 	public void onPause() {
 		SensorHandler.stopSensorListeners();
+
+		if (droneControlService != null) {
+			droneControlService.pause();
+		}
+		DroneServiceWrapper.setDroneService(null);
 		super.onPause();
 	}
 
@@ -165,5 +175,12 @@ public class StageActivity extends AndroidApplication {
 			droneControlService = null;
 		}
 	};
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Toast.makeText(this, "call onDestroy", Toast.LENGTH_LONG).show();
+		unbindService(droneServiceConnection);
+	}
 
 }

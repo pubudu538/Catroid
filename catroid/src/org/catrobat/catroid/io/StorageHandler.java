@@ -262,9 +262,8 @@ public final class StorageHandler {
 		}
 	}
 
-	public boolean cancelLoadProject()
-	{
-		if (fileInputStream !=null){
+	public boolean cancelLoadProject() {
+		if (fileInputStream != null) {
 			try {
 				fileInputStream.close();
 				return true;
