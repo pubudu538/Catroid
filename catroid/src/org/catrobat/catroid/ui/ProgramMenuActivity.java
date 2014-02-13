@@ -89,6 +89,9 @@ public class ProgramMenuActivity extends BaseActivity {
 		if (requestCode == PreStageActivity.REQUEST_RESOURCES_INIT && resultCode == RESULT_OK) {
 			SensorHandler.startSensorListener(this);
 			Intent intent = new Intent(ProgramMenuActivity.this, StageActivity.class);
+			intent.putExtras(data.getExtras()); //Add Drone Extras
+			Boolean extra = data.getBooleanExtra(PreStageActivity.STRING_EXTRA_INIT_DRONE, false);
+			Log.d(TAG, "Extra STRING_EXTRA_INIT_DRONE=" + extra.toString());
 			startActivityForResult(intent, StageActivity.STAGE_ACTIVITY_FINISH);
 		}
 		if (requestCode == StageActivity.STAGE_ACTIVITY_FINISH) {

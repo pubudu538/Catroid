@@ -71,6 +71,8 @@ public class PreStageActivity extends Activity
 	public static final int REQUEST_RESOURCES_INIT = 101;
 	public static final int REQUEST_TEXT_TO_SPEECH = 10;
 
+	public static final String STRING_EXTRA_INIT_DRONE = "STRING_EXTRA_INIT_DRONE";
+
 	private int requiredResourceCounter;
 	private static LegoNXT legoNXT;
 	private ProgressDialog connectingProgressDialog;
@@ -84,9 +86,13 @@ public class PreStageActivity extends Activity
 
 	private boolean autoConnect = false;
 
+	private Intent intent = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		intent = new Intent();
 
 		int requiredResources = getRequiredRessources();
 		requiredResourceCounter = Integer.bitCount(requiredResources);
@@ -116,6 +122,9 @@ public class PreStageActivity extends Activity
 			}
 		}
 		if ((requiredResources & Brick.ARDRONE_SUPPORT) > 0) {
+			Intent startService = new Intent(this, DroneControlService.class);
+			startService(startService);
+
 			boolean isSuccessful = bindService(new Intent(this, DroneControlService.class),
 					this.droneServiceConnection, Context.BIND_AUTO_CREATE);
 			if (!isSuccessful) {
@@ -195,7 +204,7 @@ public class PreStageActivity extends Activity
 	}
 
 	private void resourceFailed() {
-		setResult(RESULT_CANCELED, getIntent());
+		setResult(RESULT_CANCELED, intent);
 		finish();
 	}
 
@@ -205,12 +214,13 @@ public class PreStageActivity extends Activity
 		requiredResourceCounter--;
 		if (requiredResourceCounter == 0) {
 			Log.d(TAG, "Start Stage");
+
 			startStage();
 		}
 	}
 
 	public void startStage() {
-		setResult(RESULT_OK, getIntent());
+		setResult(RESULT_OK, intent);
 		finish();
 	}
 
@@ -364,6 +374,8 @@ public class PreStageActivity extends Activity
 
 	private void onDroneServiceConnected() {
 		Log.d(TAG, "onDroneServiceConnected");
+
+		intent.putExtra(STRING_EXTRA_INIT_DRONE, true);
 		resourceInitialized();
 	}
 

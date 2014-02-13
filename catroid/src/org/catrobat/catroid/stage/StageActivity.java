@@ -59,15 +59,28 @@ public class StageActivity extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		boolean isSuccessful = bindService(new Intent(this, DroneControlService.class), this.droneServiceConnection,
-				Context.BIND_AUTO_CREATE);
-		if (!isSuccessful) {
-			Toast.makeText(this, "Connection to the drone not successful", Toast.LENGTH_LONG).show();
+
+		if (prepareRessources()) {
+			//TODO: Abort stage start and show error -> UI-Team
 		}
+
 		stageListener = new StageListener();
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
 		initialize(stageListener, true);
+	}
+
+	private boolean prepareRessources() {
+		Boolean initDrone = getIntent().getBooleanExtra(PreStageActivity.STRING_EXTRA_INIT_DRONE, false);
+		Log.d(TAG, "prepareRessources() initDrone=" + initDrone.toString());
+		if (initDrone) {
+			if (!helpBindService()) {
+				Toast.makeText(this, "Connection to the drone not successful", Toast.LENGTH_LONG).show();
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -89,7 +102,7 @@ public class StageActivity extends AndroidApplication {
 
 		if (droneControlService != null) {
 			droneControlService.pause();
-			DroneServiceWrapper.setDroneService(null);
+			DroneServiceWrapper.getInstance().setDroneService(null);
 		}
 		super.onPause();
 	}
@@ -98,7 +111,7 @@ public class StageActivity extends AndroidApplication {
 	public void onResume() {
 		if (droneControlService != null) {
 			droneControlService.resume();
-			DroneServiceWrapper.setDroneService(droneControlService);
+			DroneServiceWrapper.getInstance().setDroneService(droneControlService);
 		}
 		SensorHandler.startSensorListener(this);
 		super.onResume();
@@ -162,7 +175,7 @@ public class StageActivity extends AndroidApplication {
 	}
 
 	private void onDroneServiceConnected(DroneControlService service) {
-		DroneServiceWrapper.setDroneService(service);
+		DroneServiceWrapper.getInstance().setDroneService(service);
 		Log.d(TAG, "DroneServiceConnection");
 	}
 
@@ -170,12 +183,14 @@ public class StageActivity extends AndroidApplication {
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.d(TAG, "Drone Connected");
 			droneControlService = ((DroneControlService.LocalBinder) service).getService();
 			onDroneServiceConnected(droneControlService);
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
+			Log.d(TAG, "Drone Disconnected");
 			droneControlService = null;
 		}
 	};
@@ -184,7 +199,21 @@ public class StageActivity extends AndroidApplication {
 	protected void onDestroy() {
 		super.onDestroy();
 		Toast.makeText(this, "call onDestroy", Toast.LENGTH_LONG).show();
-		unbindService(droneServiceConnection);
+
 	}
 
+	private void helpUnbindService() {
+		if (droneControlService != null) {
+			unbindService(droneServiceConnection);
+		}
+	}
+
+	private boolean helpBindService() {
+		boolean droneServiceWasCreated = false;
+		if (droneControlService == null) {
+			droneServiceWasCreated = bindService(new Intent(this, DroneControlService.class),
+					this.droneServiceConnection, Context.BIND_AUTO_CREATE);
+		}
+		return droneServiceWasCreated;
+	}
 }
