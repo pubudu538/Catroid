@@ -89,13 +89,17 @@ public class StageActivity extends AndroidApplication {
 
 		if (droneControlService != null) {
 			droneControlService.pause();
+			DroneServiceWrapper.setDroneService(null);
 		}
-		DroneServiceWrapper.setDroneService(null);
 		super.onPause();
 	}
 
 	@Override
 	public void onResume() {
+		if (droneControlService != null) {
+			droneControlService.resume();
+			DroneServiceWrapper.setDroneService(droneControlService);
+		}
 		SensorHandler.startSensorListener(this);
 		super.onResume();
 	}
