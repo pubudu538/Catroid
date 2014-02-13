@@ -98,19 +98,23 @@ public class StageActivity extends AndroidApplication {
 
 	@Override
 	public void onPause() {
+		super.onPause();
+
 		SensorHandler.stopSensorListeners();
 
 		if (droneControlService != null) {
 			droneControlService.pause();
 			DroneServiceWrapper.getInstance().setDroneService(null);
 		}
-		super.onPause();
 	}
 
 	@Override
 	public void onResume() {
+		Log.d(TAG, "onResume");
 		if (droneControlService != null) {
+			Log.d(TAG, "if (droneCo .. onResume");
 			droneControlService.resume();
+
 			DroneServiceWrapper.getInstance().setDroneService(droneControlService);
 		}
 		SensorHandler.startSensorListener(this);
@@ -176,6 +180,7 @@ public class StageActivity extends AndroidApplication {
 
 	private void onDroneServiceConnected(DroneControlService service) {
 		DroneServiceWrapper.getInstance().setDroneService(service);
+		droneControlService.resume();
 		Log.d(TAG, "DroneServiceConnection");
 	}
 
@@ -198,7 +203,9 @@ public class StageActivity extends AndroidApplication {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Toast.makeText(this, "call onDestroy", Toast.LENGTH_LONG).show();
+		unbindService(droneServiceConnection);
+		droneControlService = null;
+		Log.d(TAG, "Destroy");
 
 	}
 

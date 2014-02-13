@@ -122,8 +122,8 @@ public class PreStageActivity extends Activity
 			}
 		}
 		if ((requiredResources & Brick.ARDRONE_SUPPORT) > 0) {
-			Intent startService = new Intent(this, DroneControlService.class);
-			startService(startService);
+			//Intent startService = new Intent(this, DroneControlService.class);
+			//startService(startService);
 
 			boolean isSuccessful = bindService(new Intent(this, DroneControlService.class),
 					this.droneServiceConnection, Context.BIND_AUTO_CREATE);
