@@ -427,8 +427,8 @@ public class DroneControlService extends Service implements Runnable, DroneAcade
 		droneProxy.flatTrimNative();
 	}
 
-	public void playLedAnimation(float frequency, long duration) {
-		droneProxy.playLedAnimation(frequency, duration);
+	public void playLedAnimation(float frequency, int duration, int animationMode) {
+		droneProxy.playLedAnimation(frequency, duration, animationMode);
 	}
 
 	/*

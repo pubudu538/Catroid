@@ -25,6 +25,7 @@ package org.catrobat.catroid.content.actions;
 import android.util.Log;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
+import com.parrot.freeflight.drone.DroneProxy.ARDRONE_LED_ANIMATION;
 
 import org.catrobat.catroid.drone.DroneServiceWrapper;
 
@@ -41,7 +42,8 @@ public class DronePlayLedAnimationAction extends TemporalAction {
 	public boolean act(float delta) {
 		Boolean superReturn = super.act(delta);
 		Log.d(TAG, "Do Drone Stuff once, superReturn = " + superReturn.toString());
-		DroneServiceWrapper.getInstance().getDroneService().playLedAnimation(3.0f, 5L);
+		DroneServiceWrapper.getInstance().getDroneService()
+				.playLedAnimation(10.0f, 2, ARDRONE_LED_ANIMATION.ARDRONE_LED_ANIMATION_BLINK_GREEN.ordinal());
 		return superReturn;
 	}
 
