@@ -26,13 +26,10 @@ import android.util.Log;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-import org.catrobat.catroid.content.bricks.LegoNxtMotorStopBrick.Motor;
 import org.catrobat.catroid.drone.DroneServiceWrapper;
 
 public class DronePlayLedAnimationAction extends TemporalAction {
 
-	private static final int NO_DELAY = 0;
-	private Motor motorEnum;
 	private static final String TAG = DronePlayLedAnimationAction.class.getSimpleName();
 
 	@Override
@@ -46,10 +43,6 @@ public class DronePlayLedAnimationAction extends TemporalAction {
 		Log.d(TAG, "Do Drone Stuff once, superReturn = " + superReturn.toString());
 		DroneServiceWrapper.getInstance().getDroneService().playLedAnimation(3.0f, 5L);
 		return superReturn;
-	}
-
-	public void setMotorEnum(Motor motorEnum) {
-		this.motorEnum = motorEnum;
 	}
 
 }
