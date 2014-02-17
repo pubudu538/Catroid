@@ -137,6 +137,7 @@ public class ProjectActivity extends BaseActivity {
 		if (requestCode == PreStageActivity.REQUEST_RESOURCES_INIT && resultCode == RESULT_OK) {
 			SensorHandler.startSensorListener(this);
 			Intent intent = new Intent(ProjectActivity.this, StageActivity.class);
+			PreStageActivity.addDroneSupportToIntent(data, intent);
 			startActivityForResult(intent, StageActivity.STAGE_ACTIVITY_FINISH);
 		}
 		if (requestCode == StageActivity.STAGE_ACTIVITY_FINISH) {

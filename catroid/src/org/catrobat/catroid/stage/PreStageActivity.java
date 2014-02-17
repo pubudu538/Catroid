@@ -91,7 +91,7 @@ public class PreStageActivity extends Activity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		Log.d(TAG, "onCreate");
 		intent = new Intent();
 
 		int requiredResources = getRequiredRessources();
@@ -122,12 +122,14 @@ public class PreStageActivity extends Activity
 			}
 		}
 		if ((requiredResources & Brick.ARDRONE_SUPPORT) > 0) {
-			//Intent startService = new Intent(this, DroneControlService.class);
-			//startService(startService);
+			Log.d(TAG, "Adding drone support!");
+			Intent startService = new Intent(this, DroneControlService.class);
+
+			Object obj = startService(startService);
 
 			boolean isSuccessful = bindService(new Intent(this, DroneControlService.class),
 					this.droneServiceConnection, Context.BIND_AUTO_CREATE);
-			if (!isSuccessful) {
+			if (obj == null || !isSuccessful) {
 				Toast.makeText(this, "Connection to the drone failed!", Toast.LENGTH_LONG).show();
 				resourceFailed();
 			}
@@ -375,6 +377,8 @@ public class PreStageActivity extends Activity
 	private void onDroneServiceConnected() {
 		Log.d(TAG, "onDroneServiceConnected");
 
+		droneControlService.resume();
+		droneControlService.requestDroneStatus();
 		intent.putExtra(STRING_EXTRA_INIT_DRONE, true);
 		resourceInitialized();
 	}
@@ -393,4 +397,13 @@ public class PreStageActivity extends Activity
 		}
 	};
 
+	public static Intent addDroneSupportToIntent(Intent oldIntent, Intent newIntent) {
+		if (newIntent == null || newIntent == null) {
+			return null;
+		}
+		Boolean isDroneRequired = oldIntent.getBooleanExtra(STRING_EXTRA_INIT_DRONE, false);
+		Log.d(TAG, "Extra STRING_EXTRA_INIT_DRONE=" + isDroneRequired.toString());
+		newIntent.putExtra(STRING_EXTRA_INIT_DRONE, isDroneRequired);
+		return newIntent;
+	}
 }
