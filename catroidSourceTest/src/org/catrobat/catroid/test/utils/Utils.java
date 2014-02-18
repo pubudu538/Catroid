@@ -64,6 +64,9 @@ public final class Utils {
 
 		for (File file : contents) {
 			if (file.isDirectory()) {
+				if (file.getName().equalsIgnoreCase("parrot")) {
+					continue; //TODO Add Parrot Licence
+				}
 				filesFound.addAll(getFilesFromDirectoryByExtension(file, extensions));
 			} else {
 				filesFound.add(file);
@@ -72,5 +75,4 @@ public final class Utils {
 
 		return filesFound;
 	}
-
 }
