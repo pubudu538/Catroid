@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.parrot.freeflight.receivers.DroneReadyReceiver;
+import com.parrot.freeflight.receivers.DroneReadyReceiverDelegate;
 import com.parrot.freeflight.service.DroneControlService;
 
 import org.catrobat.catroid.ProjectManager;
@@ -45,7 +48,7 @@ import org.catrobat.catroid.drone.DroneServiceWrapper;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 
-public class StageActivity extends AndroidApplication {
+public class StageActivity extends AndroidApplication implements DroneReadyReceiverDelegate {
 	public static final String TAG = StageActivity.class.getSimpleName();
 
 	public static StageListener stageListener;
@@ -78,6 +81,8 @@ public class StageActivity extends AndroidApplication {
 		Boolean initDrone = getIntent().getBooleanExtra(PreStageActivity.STRING_EXTRA_INIT_DRONE, false);
 		Log.d(TAG, "prepareRessources() initDrone=" + initDrone.toString());
 		if (initDrone) {
+			droneReadyReceiver = new DroneReadyReceiver(this);
+
 			helpBindService();
 		}
 
@@ -125,6 +130,7 @@ public class StageActivity extends AndroidApplication {
 			DroneServiceWrapper.getInstance().setDroneService(droneControlService);
 		}
 		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getApplicationContext());
+		manager.registerReceiver(droneReadyReceiver, new IntentFilter(DroneControlService.DRONE_STATE_READY_ACTION));
 
 		SensorHandler.startSensorListener(this);
 	}
@@ -186,10 +192,12 @@ public class StageActivity extends AndroidApplication {
 		}
 	}
 
-	private void onDroneServiceConnected(DroneControlService service) {
-		DroneServiceWrapper.getInstance().setDroneService(service);
+	private void onDroneServiceConnected(IBinder service) {
+		droneControlService = ((DroneControlService.LocalBinder) service).getService();
+		DroneServiceWrapper.getInstance().setDroneService(droneControlService);
 		droneControlService.resume();
 		droneControlService.requestDroneStatus();
+
 		Log.d(TAG, "DroneServiceConnection");
 	}
 
@@ -198,8 +206,7 @@ public class StageActivity extends AndroidApplication {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.d(TAG, "Drone Connected");
-			droneControlService = ((DroneControlService.LocalBinder) service).getService();
-			onDroneServiceConnected(droneControlService);
+			onDroneServiceConnected(service);
 		}
 
 		@Override
@@ -207,14 +214,14 @@ public class StageActivity extends AndroidApplication {
 			Log.d(TAG, "Drone Disconnected");
 			droneControlService = null;
 		}
+
 	};
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		helpUnbindService();
 		Log.d(TAG, "Destroy");
-
+		super.onDestroy();
 	}
 
 	private void helpUnbindService() {
@@ -235,5 +242,11 @@ public class StageActivity extends AndroidApplication {
 			}
 		}
 		return droneServiceWasCreated;
+	}
+
+	@Override
+	public void onDroneReady() {
+		Log.d(TAG, "onDroneReady");
+
 	}
 }
