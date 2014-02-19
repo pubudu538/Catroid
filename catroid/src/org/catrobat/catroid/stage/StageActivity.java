@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.stage;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -50,7 +52,8 @@ public class StageActivity extends AndroidApplication {
 	private boolean resizePossible;
 	private StageDialog stageDialog;
 
-	protected DroneControlService droneControlService;
+	protected DroneControlService droneControlService = null;
+	private BroadcastReceiver droneReadyReceiver = null;
 
 	public static final int STAGE_ACTIVITY_FINISH = 7777;
 
@@ -60,24 +63,22 @@ public class StageActivity extends AndroidApplication {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		if (prepareRessources()) {
-			//TODO: Abort stage start and show error -> UI-Team
-		}
-
 		stageListener = new StageListener();
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
 		initialize(stageListener, true);
+
+		if (prepareRessources()) {
+			//TODO: Abort stage start and show error -> UI-Team
+		}
+
 	}
 
 	private boolean prepareRessources() {
 		Boolean initDrone = getIntent().getBooleanExtra(PreStageActivity.STRING_EXTRA_INIT_DRONE, false);
 		Log.d(TAG, "prepareRessources() initDrone=" + initDrone.toString());
 		if (initDrone) {
-			if (!helpBindService()) {
-				Toast.makeText(this, "Connection to the drone not successful", Toast.LENGTH_LONG).show();
-				return false;
-			}
+			helpBindService();
 		}
 
 		return true;
@@ -106,19 +107,26 @@ public class StageActivity extends AndroidApplication {
 			droneControlService.pause();
 			DroneServiceWrapper.getInstance().setDroneService(null);
 		}
+		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getApplicationContext());
+		manager.unregisterReceiver(droneReadyReceiver);
+
 	}
 
 	@Override
 	public void onResume() {
+		super.onResume();
+
 		Log.d(TAG, "onResume");
+
 		if (droneControlService != null) {
 			Log.d(TAG, "if (droneCo .. onResume");
 			droneControlService.resume();
 
 			DroneServiceWrapper.getInstance().setDroneService(droneControlService);
 		}
+		LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getApplicationContext());
+
 		SensorHandler.startSensorListener(this);
-		super.onResume();
 	}
 
 	public void pause() {
@@ -181,6 +189,7 @@ public class StageActivity extends AndroidApplication {
 	private void onDroneServiceConnected(DroneControlService service) {
 		DroneServiceWrapper.getInstance().setDroneService(service);
 		droneControlService.resume();
+		droneControlService.requestDroneStatus();
 		Log.d(TAG, "DroneServiceConnection");
 	}
 
@@ -203,15 +212,16 @@ public class StageActivity extends AndroidApplication {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		unbindService(droneServiceConnection);
-		droneControlService = null;
+		helpUnbindService();
 		Log.d(TAG, "Destroy");
 
 	}
 
 	private void helpUnbindService() {
-		if (droneControlService != null) {
+		if (droneServiceConnection != null) {
 			unbindService(droneServiceConnection);
+			droneServiceConnection = null;
+			droneControlService = null;
 		}
 	}
 
@@ -220,6 +230,9 @@ public class StageActivity extends AndroidApplication {
 		if (droneControlService == null) {
 			droneServiceWasCreated = bindService(new Intent(this, DroneControlService.class),
 					this.droneServiceConnection, Context.BIND_AUTO_CREATE);
+			if (!droneServiceWasCreated) {
+				Toast.makeText(this, "Connection to the drone not successful", Toast.LENGTH_LONG).show();
+			}
 		}
 		return droneServiceWasCreated;
 	}
