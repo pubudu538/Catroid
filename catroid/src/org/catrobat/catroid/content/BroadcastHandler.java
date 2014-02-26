@@ -87,8 +87,8 @@ public final class BroadcastHandler {
 				look.addAction(action);
 			}
 		} else {
-			if (!look.actionsToRestart.contains(action)) {
-				look.actionsToRestart.add(action);
+			if (!Look.actionsToRestart.contains(action)) {
+				Look.actionsToRestart.add(action);
 			}
 		}
 	}
