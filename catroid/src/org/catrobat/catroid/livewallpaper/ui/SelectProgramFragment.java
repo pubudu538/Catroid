@@ -74,7 +74,6 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 
 	private ActionMode actionMode;
 	private static String deleteActionModeTitle;
-	private Thread loading;
 	private ProjectData projectToEdit;
 
 	private ProjectManager projectManager = ProjectManager.getInstance();
@@ -166,8 +165,7 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 
 		@Override
 		protected void onPostExecute(Void result) {
-			Thread postExec = Thread.currentThread();
-			LiveWallpaper.getInstance().changeWallpaperProgram(postExec);
+			LiveWallpaper.getInstance().changeWallpaperProgram();
 			//			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
 			//			getFragmentManager().popBackStack();
 

@@ -125,11 +125,11 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		}
 	}
 
-	public void changeWallpaperProgram(Thread postExec) {
+	public void changeWallpaperProgram() {
 		if (TEST) {
 			return;
 		}
-		previewEngine.changeWallpaperProgram(postExec);
+		previewEngine.changeWallpaperProgram();
 		//TODO
 		//homeEngine.changeWallpaperProgram();
 	}
@@ -271,8 +271,8 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			super.onDestroy();
 		}
 
-		public void changeWallpaperProgram(Thread postExec) {
-			getLocalStageListener().reloadProject(getApplicationContext(), postExec);
+		public void changeWallpaperProgram() {
+			getLocalStageListener().reloadProject(getApplicationContext());
 			activateTextToSpeechIfNeeded();
 
 		}
