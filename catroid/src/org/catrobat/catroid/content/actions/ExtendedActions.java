@@ -25,6 +25,7 @@ package org.catrobat.catroid.content.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.SoundInfo;
@@ -187,14 +188,44 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	public static DroneTakeoffAction droneTakeOff() {
-		DroneTakeoffAction action = action(DroneTakeoffAction.class);
-		return action;
+	public static TemporalAction droneTakeOff() {
+		return action(DroneTakeoffAction.class);
 	}
 
-	public static DronePlayLedAnimationAction dronePlayLedAnimation() {
-		DronePlayLedAnimationAction action = action(DronePlayLedAnimationAction.class);
-		return action;
+	public static TemporalAction droneLand() {
+		return action(DroneTakeoffAction.class);
+	}
+
+	public static TemporalAction droneMoveUp() {
+		return action(DroneMoveUpAction.class);
+	}
+
+	public static TemporalAction droneMoveDown() {
+		return action(DroneMoveDownAction.class);
+	}
+
+	public static TemporalAction droneMoveLeft() {
+		return action(DroneMoveLeftAction.class);
+	}
+
+	public static TemporalAction droneMoveRight() {
+		return action(DroneMoveRightAction.class);
+	}
+
+	public static TemporalAction droneMoveForward() {
+		return action(DroneMoveForwardAction.class);
+	}
+
+	public static TemporalAction droneMoveBackward() {
+		return action(DroneMoveBackwardAction.class);
+	}
+
+	public static TemporalAction dronePlayLedAnimation() {
+		return action(DronePlayLedAnimationAction.class);
+	}
+
+	public static TemporalAction droneFlip() {
+		return action(DroneFlipAction.class);
 	}
 
 	public static MoveNStepsAction moveNSteps(Sprite sprite, Formula steps) {
