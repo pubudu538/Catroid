@@ -25,7 +25,7 @@
     style="@style/BrickCategory" >
 
     <TextView
-        style="@style/BrickCategoryText.Lego"
+        style="@style/BrickCategoryText.Drone"
         android:text="@string/category_drone" >
     </TextView>
 
